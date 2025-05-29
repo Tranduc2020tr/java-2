@@ -31,4 +31,5 @@ public interface CrudController<Entity> {
     void moveNext(); // Hiển thị thực thể kế sau
     void moveLast(); 
     void moveTo(int index);
+    
 }

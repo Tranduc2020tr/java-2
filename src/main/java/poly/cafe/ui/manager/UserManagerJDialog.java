@@ -4,11 +4,24 @@
  */
 package poly.cafe.ui.manager;
 
+import java.io.File;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import poly.cafe.entity.User;
+import poly.cafe.ui.UserController.UserController;
+import poly.cafe.util.XDialog;
+
 /**
  *
  * @author hang
  */
-public class UserManagerJDialog extends javax.swing.JDialog {
+public class UserManagerJDialog extends JDialog implements UserController {
+
+    private User currentUser = new User();
 
     /**
      * Creates new form UserManagerJDialog
@@ -16,6 +29,7 @@ public class UserManagerJDialog extends javax.swing.JDialog {
     public UserManagerJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        fillToTable();
     }
 
     /**
@@ -27,7 +41,9 @@ public class UserManagerJDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        btg1 = new javax.swing.ButtonGroup();
+        btg2 = new javax.swing.ButtonGroup();
+        tabs = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCategories = new javax.swing.JTable();
@@ -35,32 +51,44 @@ public class UserManagerJDialog extends javax.swing.JDialog {
         btnUncheckAll = new javax.swing.JButton();
         btnDeleteCheckedItems = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        rd_error = new javax.swing.JRadioButton();
-        rd_lose = new javax.swing.JRadioButton();
+        rd_nhanvien = new javax.swing.JRadioButton();
+        rd_hd = new javax.swing.JRadioButton();
         btnCreate = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtId = new javax.swing.JTextField();
+        txt_username = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        rd_operating = new javax.swing.JRadioButton();
+        rd_admin = new javax.swing.JRadioButton();
+        jLabel3 = new javax.swing.JLabel();
+        rd_khd = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
+        txt_password = new javax.swing.JTextField();
+        lb_hinhanh = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txt_fullname = new javax.swing.JTextField();
+        bt_img = new javax.swing.JButton();
+        btnMoveLast = new javax.swing.JButton();
+        btnMoveFirst = new javax.swing.JButton();
+        btnMovePrevious = new javax.swing.JButton();
+        btnMoveNext = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblCategories.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "mã thẻ", "Trạng thái", ""
+                "Username", "Password", "Họ và tên", "Quyền", "Trạng thái", "Ảnh", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -96,7 +124,7 @@ public class UserManagerJDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 869, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 922, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCheckAll)
@@ -119,11 +147,18 @@ public class UserManagerJDialog extends javax.swing.JDialog {
                 .addGap(22, 22, 22))
         );
 
-        jTabbedPane1.addTab("Danh sách user", jPanel1);
+        tabs.addTab("Danh sách user", jPanel1);
 
-        rd_error.setText("Error");
+        btg1.add(rd_nhanvien);
+        rd_nhanvien.setText("nhân viên");
 
-        rd_lose.setText("Lose");
+        btg2.add(rd_hd);
+        rd_hd.setText("Hoạt Động");
+        rd_hd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rd_hdActionPerformed(evt);
+            }
+        });
 
         btnCreate.setText("Tạo mới");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
@@ -153,14 +188,71 @@ public class UserManagerJDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Mã thẻ");
+        jLabel1.setText("Username");
 
         jLabel2.setText("Trạng thái");
 
-        rd_operating.setText("Operating");
-        rd_operating.addActionListener(new java.awt.event.ActionListener() {
+        btg1.add(rd_admin);
+        rd_admin.setText("admin");
+        rd_admin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rd_operatingActionPerformed(evt);
+                rd_adminActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Phân quyền");
+
+        btg2.add(rd_khd);
+        rd_khd.setText("Không Hoạt Động");
+        rd_khd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rd_khdActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Passworld");
+
+        lb_hinhanh.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lb_hinhanh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lb_hinhanhMouseClicked(evt);
+            }
+        });
+
+        jLabel6.setText("Họ và tên");
+
+        bt_img.setText("thêm ảnh");
+        bt_img.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_imgActionPerformed(evt);
+            }
+        });
+
+        btnMoveLast.setText(">|");
+        btnMoveLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveLastActionPerformed(evt);
+            }
+        });
+
+        btnMoveFirst.setText("|<");
+        btnMoveFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveFirstActionPerformed(evt);
+            }
+        });
+
+        btnMovePrevious.setText("<<");
+        btnMovePrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMovePreviousActionPerformed(evt);
+            }
+        });
+
+        btnMoveNext.setText(">>");
+        btnMoveNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveNextActionPerformed(evt);
             }
         });
 
@@ -168,66 +260,125 @@ public class UserManagerJDialog extends javax.swing.JDialog {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 875, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(179, 179, 179)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(btnCreate)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnUpdate)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnDelete)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnClear))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(rd_operating, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(52, 52, 52)
-                            .addComponent(rd_error, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(70, 70, 70)
-                            .addComponent(rd_lose, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(180, Short.MAX_VALUE)))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(lb_hinhanh, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(127, 127, 127)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txt_fullname, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 6, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addComponent(btnCreate)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdate)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnClear)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(107, 107, 107))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(68, 68, 68)
+                .addComponent(bt_img)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(rd_nhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rd_admin, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(315, 315, 315)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(rd_hd, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(rd_khd))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnMoveFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnMovePrevious, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnMoveNext, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnMoveLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(70, 70, 70))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 404, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(76, 76, 76)
-                    .addComponent(jLabel1)
-                    .addGap(18, 18, 18)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(28, 28, 28)
-                    .addComponent(jLabel2)
-                    .addGap(32, 32, 32)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txt_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(txt_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_fullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(lb_hinhanh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(17, 17, 17)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(bt_img))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rd_nhanvien)
+                            .addComponent(rd_admin)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rd_hd)
+                            .addComponent(rd_khd))))
+                .addGap(55, 55, 55)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCreate)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnDelete)
+                    .addComponent(btnClear)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(rd_operating)
-                        .addComponent(rd_error)
-                        .addComponent(rd_lose))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnCreate)
-                        .addComponent(btnUpdate)
-                        .addComponent(btnDelete)
-                        .addComponent(btnClear))
-                    .addGap(77, 77, 77)))
+                        .addComponent(btnMoveFirst)
+                        .addComponent(btnMovePrevious)
+                        .addComponent(btnMoveNext)
+                        .addComponent(btnMoveLast)))
+                .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Tạo user", jPanel2);
+        tabs.addTab("Tạo user", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(tabs)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabs)
         );
 
         pack();
@@ -236,16 +387,19 @@ public class UserManagerJDialog extends javax.swing.JDialog {
     private void btnCheckAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckAllActionPerformed
         // TODO add your handling code here:
         this.checkAll();
+
     }//GEN-LAST:event_btnCheckAllActionPerformed
 
     private void btnUncheckAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUncheckAllActionPerformed
         // TODO add your handling code here:
         this.uncheckAll();
+
     }//GEN-LAST:event_btnUncheckAllActionPerformed
 
     private void btnDeleteCheckedItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCheckedItemsActionPerformed
         // TODO add your handling code here:
         this.deleteCheckedItems();
+
     }//GEN-LAST:event_btnDeleteCheckedItemsActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
@@ -256,21 +410,69 @@ public class UserManagerJDialog extends javax.swing.JDialog {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
         this.update();
+
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
         this.delete();
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         // TODO add your handling code here:
         this.clear();
+
     }//GEN-LAST:event_btnClearActionPerformed
 
-    private void rd_operatingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_operatingActionPerformed
+    private void rd_adminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_adminActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rd_operatingActionPerformed
+    }//GEN-LAST:event_rd_adminActionPerformed
+
+    private void rd_hdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_hdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rd_hdActionPerformed
+
+    private void rd_khdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_khdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rd_khdActionPerformed
+
+    private void lb_hinhanhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_hinhanhMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_lb_hinhanhMouseClicked
+
+    private void bt_imgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_imgActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        int ketqua = chooser.showOpenDialog(this);
+        if (ketqua == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            String path = file.getAbsolutePath();
+            lb_hinhanh.setIcon(new ImageIcon(path));
+            currentUser.setPhoto(path);
+        }
+    }//GEN-LAST:event_bt_imgActionPerformed
+
+    private void btnMoveLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveLastActionPerformed
+        // TODO add your handling code here:
+        this.moveLast();
+    }//GEN-LAST:event_btnMoveLastActionPerformed
+
+    private void btnMoveFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveFirstActionPerformed
+        // TODO add your handling code here:
+        this.moveFirst();
+    }//GEN-LAST:event_btnMoveFirstActionPerformed
+
+    private void btnMovePreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovePreviousActionPerformed
+        // TODO add your handling code here:
+        this.movePrevious();
+    }//GEN-LAST:event_btnMovePreviousActionPerformed
+
+    private void btnMoveNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNextActionPerformed
+        // TODO add your handling code here:
+        this.moveNext();
+    }//GEN-LAST:event_btnMoveNextActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,23 +517,290 @@ public class UserManagerJDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_img;
+    private javax.swing.ButtonGroup btg1;
+    private javax.swing.ButtonGroup btg2;
     private javax.swing.JButton btnCheckAll;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDeleteCheckedItems;
+    private javax.swing.JButton btnMoveFirst;
+    private javax.swing.JButton btnMoveLast;
+    private javax.swing.JButton btnMoveNext;
+    private javax.swing.JButton btnMovePrevious;
     private javax.swing.JButton btnUncheckAll;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JRadioButton rd_error;
-    private javax.swing.JRadioButton rd_lose;
-    private javax.swing.JRadioButton rd_operating;
+    private javax.swing.JLabel lb_hinhanh;
+    private javax.swing.JRadioButton rd_admin;
+    private javax.swing.JRadioButton rd_hd;
+    private javax.swing.JRadioButton rd_khd;
+    private javax.swing.JRadioButton rd_nhanvien;
+    private javax.swing.JTabbedPane tabs;
     private javax.swing.JTable tblCategories;
-    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txt_fullname;
+    private javax.swing.JTextField txt_password;
+    private javax.swing.JTextField txt_username;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void open() {
+        this.setLocationRelativeTo(null);
+        this.fillToTable();
+        this.clear();
+    }
+
+    @Override
+    public void setForm(User entity) {
+        currentUser = entity;
+
+        txt_username.setText(entity.getUsername());
+        txt_password.setText(entity.getPassword());
+        txt_fullname.setText(entity.getFullname());
+
+        rd_admin.setSelected(entity.isManager());
+        rd_nhanvien.setSelected(!entity.isManager());
+
+        rd_hd.setSelected(entity.isEnabled());
+        rd_khd.setSelected(!entity.isEnabled());
+
+        if (entity.getPhoto() != null && !entity.getPhoto().isEmpty()) {
+            lb_hinhanh.setIcon(new ImageIcon(entity.getPhoto()));
+        } else {
+            lb_hinhanh.setIcon(null);
+        }
+    }
+
+    @Override
+    public User getForm() {
+        String photo = currentUser != null ? currentUser.getPhoto() : null;
+        return User.builder()
+                .username(txt_username.getText())
+                .password(txt_password.getText())
+                .fullname(txt_fullname.getText())
+                .enabled(rd_hd.isSelected())
+                .manager(rd_admin.isSelected())
+                .photo(photo)
+                .build();
+    }
+
+    @Override
+    public void fillToTable() {
+        DefaultTableModel model = (DefaultTableModel) tblCategories.getModel();
+        model.setRowCount(0);
+
+        List<User> users = dao.findAll();
+
+        for (User user : users) {
+            String role = user.isManager() ? "Quản lý" : "Nhân viên";
+            String status = user.isEnabled() ? "Hoạt động" : "Khóa";
+
+            Object[] rowData = {
+                user.getUsername(),
+                user.getPassword(),
+                user.getFullname(),
+                role,
+                status,
+                user.getPhoto() != null ? user.getPhoto() : "Không có",
+                false 
+            };
+            model.addRow(rowData);
+
+        }
+    }
+
+    @Override
+    public void edit() {
+        int index = tblCategories.getSelectedRow();
+
+        String username = tblCategories.getValueAt(index, 0).toString().trim();
+
+        User entity = dao.findById(username);
+        if (entity != null) {
+            this.setForm(entity);
+            this.setEditable(true);
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Người dùng không tồn tại");
+        }
+
+    }
+
+    @Override
+    public void create() {
+        
+        if (txt_username.getText().trim().isEmpty()) {
+            XDialog.alert("Username không được để trống!");
+            txt_username.requestFocus();
+            return;
+        }
+        if (txt_password.getText().trim().isEmpty()) {
+            XDialog.alert("Password không được để trống!");
+            txt_password.requestFocus();
+            return;
+        }
+        if (txt_fullname.getText().trim().isEmpty()) {
+            XDialog.alert("Fullname không được để trống!");
+            txt_fullname.requestFocus();
+            return;
+        }
+
+        try {
+            User entity = getForm();
+            dao.create(entity);
+
+            XDialog.alert("Tạo mới thành công!");
+            fillToTable();
+            clear();
+        } catch (RuntimeException e) {
+            XDialog.alert(e.getMessage());
+        }
+    }
+
+    @Override
+    public void update() {
+        User entity = this.getForm();
+        dao.update(entity);
+        XDialog.alert("đã cập nhật thành công");
+        this.fillToTable();
+         this.clear();
+    }
+
+    @Override
+    public void delete() {
+        if (XDialog.confirm("Bạn thực sự muốn xóa?")) {
+            String id = txt_username.getText();
+            dao.deleteById(id);
+            this.fillToTable();
+            this.clear();
+        }
+    }
+
+    @Override
+    public void clear() {
+        this.setForm(new User());
+        this.setEditable(false);
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+         if (!editable) {
+        
+       txt_username.setEnabled(true);
+        txt_password.setEnabled(true);
+        txt_fullname.setEnabled(true);
+        btnCreate.setEnabled(true);
+        btnUpdate.setEnabled(true);
+        btnDelete.setEnabled(true);
+        btnClear.setEnabled(true);
+        
+
+        btg1.clearSelection();
+        btg2.clearSelection();
+        
+
+        int rowCount = tblCategories.getRowCount();
+        boolean hasRows = rowCount > 0;
+        btnMoveFirst.setEnabled(hasRows);
+        btnMovePrevious.setEnabled(hasRows);
+        btnMoveNext.setEnabled(hasRows);
+        btnMoveLast.setEnabled(hasRows);
+    } else {
+       
+        txt_username.setEnabled(false);
+        txt_password.setEnabled(true);
+        txt_fullname.setEnabled(true);
+        btnCreate.setEnabled(true);
+        btnUpdate.setEnabled(true);
+        btnDelete.setEnabled(true);
+        btnClear.setEnabled(true);
+        
+
+        rd_admin.setEnabled(true);
+        rd_hd.setEnabled(true);
+        rd_khd.setEnabled(true);
+        rd_nhanvien.setEnabled(true);
+
+        int rowCount = tblCategories.getRowCount();
+        boolean hasRows = rowCount > 0;
+        btnMoveFirst.setEnabled(hasRows);
+        btnMovePrevious.setEnabled(hasRows);
+        btnMoveNext.setEnabled(hasRows);
+        btnMoveLast.setEnabled(hasRows);
+    }
+        
+    }
+
+    @Override
+    public void checkAll() {
+        this.setCheckedAll(true);
+    }
+
+    @Override
+    public void uncheckAll() {
+        this.setCheckedAll(false);
+    }
+
+    @Override
+    public void deleteCheckedItems() {
+        if (XDialog.confirm("Bạn thực sự muốn xóa các mục chọn?")) {
+            for (int i = 0; i < tblCategories.getRowCount(); i++) {
+                Boolean isChecked = (Boolean) tblCategories.getValueAt(i, 6); 
+                if (Boolean.TRUE.equals(isChecked)) {
+                    String username = tblCategories.getValueAt(i, 0).toString(); 
+                    dao.deleteById(username);
+                }
+            }
+            this.fillToTable();
+        }
+    }
+
+    @Override
+    public void moveFirst() {
+        this.moveTo(0);
+    }
+
+    @Override
+    public void movePrevious() {
+        this.moveTo(tblCategories.getSelectedRow() - 1);
+    }
+
+    @Override
+    public void moveNext() {
+        this.moveTo(tblCategories.getSelectedRow() + 1);
+    }
+
+    @Override
+    public void moveLast() {
+        this.moveTo(tblCategories.getRowCount() - 1);
+    }
+
+    @Override
+    public void moveTo(int index) {
+        
+        if (index < 0) {
+            this.moveLast();
+        } else if (index >= tblCategories.getRowCount()) {
+            this.moveFirst();
+        } else {
+            tblCategories.clearSelection();
+            tblCategories.setRowSelectionInterval(index, index);
+            this.edit();
+        }
+    }
+
+    private void setCheckedAll(boolean b) {
+        for (int i = 0; i < tblCategories.getRowCount(); i++) {
+            tblCategories.setValueAt(b, i, 6); 
+        }
+    }
+
 }
