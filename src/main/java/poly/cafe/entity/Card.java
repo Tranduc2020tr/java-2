@@ -4,6 +4,7 @@
  */
 package poly.cafe.entity;
 import lombok.*;
+
 /**
  *
  * @author hang
@@ -13,6 +14,6 @@ import lombok.*;
 @Builder
 @Data
 public class Card {
- private int id;
+ private Integer id;
  private int status;
 }

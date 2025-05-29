@@ -80,6 +80,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 400, 114, 37));
 
         btnDrinkManager.setText("ĐỒ UỐNG");
+        btnDrinkManager.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDrinkManagerActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnDrinkManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, 130, 37));
 
         btnBillManager.setText("PHIẾU BÁN HÀNG");
@@ -92,6 +97,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnUserManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(614, 420, 130, 37));
 
         btnCardManager.setText("THẺ ĐỊNH DANH");
+        btnCardManager.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCardManagerActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnCardManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 360, 130, 37));
 
         btnRevenueManager.setText("DOANH THU");
@@ -123,6 +133,16 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         // TODO add your handling code here:
         this.exit();
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnDrinkManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDrinkManagerActionPerformed
+        // TODO add your handling code here:
+        this.showCategoryManagerJDialog(this);
+    }//GEN-LAST:event_btnDrinkManagerActionPerformed
+
+    private void btnCardManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCardManagerActionPerformed
+        // TODO add your handling code here:
+        this.showCardManagerJDialog(this);
+    }//GEN-LAST:event_btnCardManagerActionPerformed
 
     /**
      * @param args the command line arguments

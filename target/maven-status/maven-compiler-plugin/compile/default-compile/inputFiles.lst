@@ -3,11 +3,11 @@ C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\entity
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\util\XJdbc.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\XAuth.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\manager\CategoryManagerJDialog.java
-C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\CategoryManagerJDialog.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\BillDetailDAO.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\manager\RevenueManagerJDialog.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\DrinkDAO.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\impl\BillDAOImpl.java
+C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\UserDialog.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\impl\BillDetailDAOImpl.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\impl\CategoryDAOImpl.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\ChangePasswordController\ChangePasswordController.java
@@ -28,6 +28,7 @@ C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\Wel
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\impl\CardDAOImpl.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\dao\CrudDAO.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\SalesJDialog.java
+C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\CardController\CardController.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\ui\BillJDialog.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\entity\Card.java
 C:\Users\hang\Documents\NetBeansProjects\PoLyCaFe\src\main\java\poly\cafe\util\XStr.java

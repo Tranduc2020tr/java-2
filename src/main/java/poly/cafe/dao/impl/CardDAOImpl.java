@@ -18,6 +18,10 @@ public class CardDAOImpl implements CardDAO {
 
     @Override
     public Card create(Card entity) {
+         Card existing = findById(entity.getId());
+    if (existing != null) {
+        throw new RuntimeException("ID đã tồn tại. Vui lòng chọn ID khác.");
+    }
        Object[] values = {
             entity.getId(),
             entity.getStatus()

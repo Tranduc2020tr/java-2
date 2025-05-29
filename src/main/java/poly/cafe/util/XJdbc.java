@@ -136,34 +136,24 @@ public class XJdbc {
     
        
      public static int update(String sql, Object... args) {
-        try (
-            PreparedStatement stmt = (PreparedStatement) XJdbc.executeQuery(sql, args)
-        ) {
-            try ( Connection conn = stmt.getConnection()) {
-                return stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    try (Connection conn = XJdbc.openConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+         
+        // Thiết lập tham số cho PreparedStatement
+        for (int i = 0; i < args.length; i++) {
+            stmt.setObject(i + 1, args[i]);
         }
-    }
-
-    public static void main(String[] args) {
-        demo1();
-        demo2();
         
+        // Thực thi update (INSERT, UPDATE, DELETE)
+        return stmt.executeUpdate();
+        
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+}
 
-    private static void demo1() {
-        String sql = "INSERT INTO Categories (Id, Name) VALUES(?, ?)";
-        XJdbc.executeUpdate(sql, "C03", "Loại 1");
-        XJdbc.executeUpdate(sql, "C04                                                       00000..........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................", "Loại 2");
-    }
 
-    private static void demo2() {
-        String sql = "SELECT * FROM Categories WHERE Name LIKE ?";
-        ResultSet rs = XJdbc.executeQuery(sql, "%Loại%");
-
-    }
+   
 
    
 
