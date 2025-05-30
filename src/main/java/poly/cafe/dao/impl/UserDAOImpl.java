@@ -18,6 +18,7 @@ public class UserDAOImpl implements UserDAO {
     String deleteSql = "DELETE FROM Users WHERE Username = ?";
     String findAllSql = "SELECT * FROM Users";
     String findByIdSql = "SELECT * FROM Users WHERE Username = ?";
+    
 
     private Connection getConnection() throws SQLException {
 

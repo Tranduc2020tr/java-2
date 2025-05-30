@@ -11,13 +11,25 @@ import poly.cafe.entity.User;
  * @author hang
  */
 public class XAuth {
-    public static User user = User.builder()
-    .username("tranduc")
-    .password("123")
-    .enabled(true)
-    .manager(true)
-    .fullname("Nguyễn Văn Tèo")
-    .photo("C:\\Users\\hang\\Documents\\NetBeansProjects\\PoLyCaFe\\src\\main\\resources\\trump-small.png")
-    .build(); // biến user này sẽ được thay thế sau khi đăng nhập
-   }
+    // Biến lưu user hiện tại (đăng nhập thành công)
+   public static User user = null;
+
+
+    // Kiểm tra đã đăng nhập chưa
+    public static boolean isLogin() {
+        return user != null;
+    }
+
+    // Kiểm tra có phải là quản lý không
+    public static boolean isManager() {
+        return isLogin() && user.isManager();
+    }
+
+    // Đăng xuất tài khoản
+    public static void logoff() {
+        user = null;
+    }
+   
+}
+
 

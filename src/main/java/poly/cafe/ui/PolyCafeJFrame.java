@@ -4,24 +4,22 @@
  */
 package poly.cafe.ui;
 
-
 import poly.cafe.ui.PolyCafeController.PolyCafeController;
 import poly.cafe.util.XIcon;
-
 
 /**
  *
  * @author hang
  */
-public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeController{
+public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeController {
 
     /**
      * Creates new form PolyCafeJFrame
      */
     public PolyCafeJFrame() {
         initComponents();
-         this.init();
-         
+        this.init();
+
     }
 
     /**
@@ -69,6 +67,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 114, 37));
 
         btnChangePassword.setText("ĐỔI MẬT KHẨU");
+        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangePasswordActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnChangePassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, -1, 37));
 
         btnExit.setText("KẾT THÚC");
@@ -88,6 +91,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnDrinkManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 360, 130, 37));
 
         btnBillManager.setText("PHIẾU BÁN HÀNG");
+        btnBillManager.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBillManagerActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnBillManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 130, 37));
 
         btnCategoryManager.setText("LOẠI ĐỒ UỐNG");
@@ -154,6 +162,15 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         this.showUserManagerJDialog(this);
     }//GEN-LAST:event_btnUserManagerActionPerformed
 
+    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
+        // TODO add your handling code here:
+        this.showChangePasswordJDialog(this);
+    }//GEN-LAST:event_btnChangePasswordActionPerformed
+
+    private void btnBillManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillManagerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBillManagerActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -207,19 +224,27 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
     // End of variables declaration//GEN-END:variables
 
     @Override
-   public void init() {
+    public void init() {
         this.setIconImage(XIcon.getIcon("C:\\Users\\hang\\Documents\\NetBeansProjects\\PoLyCaFe\\src\\main\\resources\\trump-small.png").getImage());
         this.setLocationRelativeTo(null);
+
         this.showWelcomeJDialog(this);
         this.showLoginJDialog(this);
-        
-        XIcon.setIcon(lblPhoto, "photos/" + XAuth.user.getPhoto());
-        lblFullname.setText(XAuth.user.getFullname());
-//        if(!XAuth.user.isManager()){
-//        pnlCenter.remove(pnlManager);
+
+        if (XAuth.isManager()) {
+            XIcon.setIcon(lblPhoto, XAuth.user.getPhoto());
+            lblFullname.setText(XAuth.user.getFullname());
+
+        } else {
+            XIcon.setIcon(lblPhoto, XAuth.user.getPhoto());
+            lblFullname.setText(XAuth.user.getFullname());
+            btnDrinkManager.setVisible(false);
+            btnCategoryManager.setVisible(false);
+            btnCardManager.setVisible(false);
+            btnBillManager.setVisible(false);
+            btnUserManager.setVisible(false);
+            btnRevenueManager.setVisible(false);
         }
     }
 
-
-    
-
+}

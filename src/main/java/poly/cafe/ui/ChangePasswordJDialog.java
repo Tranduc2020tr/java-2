@@ -8,14 +8,14 @@ import poly.cafe.dao.UserDAO;
 import poly.cafe.dao.impl.UserDAOImpl;
 import poly.cafe.ui.ChangePasswordController.ChangePasswordController;
 import poly.cafe.util.XDialog;
-import poly.cafe.ui.ChangePasswordJDialog;
 
 /**
  *
  * @author hang
  */
 public class ChangePasswordJDialog extends javax.swing.JDialog implements ChangePasswordController {
-        UserDAO dao = new UserDAOImpl();
+
+    UserDAO dao = new UserDAOImpl();
 
     /**
      * Creates new form ChangePasswordJDialog
@@ -61,6 +61,11 @@ public class ChangePasswordJDialog extends javax.swing.JDialog implements Change
         jLabel5.setText("Xác nhận mật khẩu mới");
 
         btnSave.setText("Lưu");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         btnClose.setText("Đóng");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +148,13 @@ public class ChangePasswordJDialog extends javax.swing.JDialog implements Change
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         // TODO add your handling code here:
+        this.close();
     }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        this.save();
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -204,34 +215,45 @@ public class ChangePasswordJDialog extends javax.swing.JDialog implements Change
 
     @Override
     public void open() {
-         this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
     }
 
     @Override
     public void save() {
-       String username = txtUsername.getText();
-            String password = txtPassword.getText();
-            String newpass = txtNewpass.getText();
-            String confirm = txtConfirm.getText();
-            if (!newpass.equals(confirm)) {
-            XDialog.alert("Xác nhận mật khẩu không đúng!");
-            } else if (!username.equals(XAuth.user.getUsername())) {
-            XDialog.alert("Sai tên đăng nhập!");
-            } else if (!password.equals(XAuth.user.getPassword())) {
-            XDialog.alert("Sai mật khẩu!");
-            } else {
-            XAuth.user.setPassword(newpass);
-            dao.update(XAuth.user);
-            XDialog.alert("Đổi mật khẩu thành công!");
+        String username = txtUsername.getText();
+        String oldPass = txtPassword.getText();
+        String newPass = txtNewpass.getText();
+        String confirm = txtConfirm.getText();
+
+        if (!newPass.equals(confirm)) {
+            XDialog.alert("Xác nhận mật khẩu không khớp!");
+            return;
         }
 
+        if (XAuth.user == null) {
+            XDialog.alert("Bạn chưa đăng nhập!");
+            return;
+        }
+
+        // Kiểm tra username
+        if (!username.equals(XAuth.user.getUsername())) {
+            XDialog.alert("Sai tên đăng nhập!");
+            return;
+        }
+
+        if (!oldPass.equals(XAuth.user.getPassword())) {
+            XDialog.alert("Mật khẩu cũ không đúng!");
+            return;
+        }
+
+        XAuth.user.setPassword(newPass);
+        dao.update(XAuth.user);
+        XDialog.alert("Đổi mật khẩu thành công!");
+        this.close();
     }
 
     @Override
     public void close() {
         this.dispose();
     }
-        
-
-
 }

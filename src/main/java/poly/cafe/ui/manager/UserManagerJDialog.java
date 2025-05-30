@@ -353,16 +353,17 @@ public class UserManagerJDialog extends JDialog implements UserController {
                             .addComponent(rd_hd)
                             .addComponent(rd_khd))))
                 .addGap(55, 55, 55)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCreate)
-                    .addComponent(btnUpdate)
-                    .addComponent(btnDelete)
-                    .addComponent(btnClear)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnMoveFirst)
                         .addComponent(btnMovePrevious)
                         .addComponent(btnMoveNext)
-                        .addComponent(btnMoveLast)))
+                        .addComponent(btnMoveLast))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnCreate)
+                        .addComponent(btnUpdate)
+                        .addComponent(btnDelete)
+                        .addComponent(btnClear)))
                 .addContainerGap())
         );
 
@@ -596,9 +597,7 @@ public class UserManagerJDialog extends JDialog implements UserController {
     public void fillToTable() {
         DefaultTableModel model = (DefaultTableModel) tblCategories.getModel();
         model.setRowCount(0);
-
         List<User> users = dao.findAll();
-
         for (User user : users) {
             String role = user.isManager() ? "Quản lý" : "Nhân viên";
             String status = user.isEnabled() ? "Hoạt động" : "Khóa";
@@ -609,7 +608,7 @@ public class UserManagerJDialog extends JDialog implements UserController {
                 user.getFullname(),
                 role,
                 status,
-                user.getPhoto() != null ? user.getPhoto() : "Không có",
+                user.getPhoto(),
                 false 
             };
             model.addRow(rowData);

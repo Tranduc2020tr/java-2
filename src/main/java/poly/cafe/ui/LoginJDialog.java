@@ -4,6 +4,7 @@
  */
 package poly.cafe.ui;
 
+import javax.swing.JDialog;
 import poly.cafe.dao.UserDAO;
 import poly.cafe.dao.impl.UserDAOImpl;
 import poly.cafe.entity.User;
@@ -14,14 +15,18 @@ import poly.cafe.util.XDialog;
  *
  * @author hang
  */
-public class LoginJDialog extends javax.swing.JDialog implements LoginController{
-        UserDAO dao = new UserDAOImpl();
+public class LoginJDialog extends javax.swing.JDialog implements LoginController {
+
+    UserDAO dao = new UserDAOImpl();
+
     /**
      * Creates new form LoginJDialog
      */
     public LoginJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+
     }
 
     /**
@@ -190,36 +195,40 @@ public class LoginJDialog extends javax.swing.JDialog implements LoginController
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
-        
-   
-       @Override
-        public void open() {
-            this.setLocationRelativeTo(null);
-        }
-        
-       @Override  
-public void login() {
-    String username = txtUsername.getText().trim();
-    String password = new String(txtPassword.getPassword()).trim();
 
-    System.out.println("Username nhập: " + username);
-    System.out.println("Password nhập: " + password);
+    @Override
+    public void open() {
+        this.setLocationRelativeTo(null);
+    }
+
+    @Override
+   public void login() {
+    String username = txtUsername.getText();
+    String password = new String(txtPassword.getPassword());
 
     User user = dao.findById(username);
     if (user == null) {
         XDialog.alert("Sai tên đăng nhập!");
+    } else if (!password.equals(user.getPassword())) {
+        XDialog.alert("Sai mật khẩu đăng nhập!");
+    } else if (!user.isEnabled()) {
+        XDialog.alert("Tài khoản của bạn đang tạm dừng!");
     } else {
-        System.out.println("Password trong DB: " + user.getPassword());
-        if (!password.equals(user.getPassword())) {
-            XDialog.alert("Sai mật khẩu đăng nhập!");
-        } else if (!user.isEnabled()) {
-            XDialog.alert("Tài khoản của bạn đang tạm dừng!");
+        // ✅ Gán user đã đăng nhập
+        XAuth.user = user;
+
+        // ✅ Phân quyền
+        if (XAuth.isManager()) {
+            XDialog.alert("Đăng nhập thành công với vai trò: Quản lý");
         } else {
-            XAuth.user = user; 
-            XDialog.alert("Đăng nhập thành công!");
-            this.dispose();
+            XDialog.alert("Đăng nhập thành công với vai trò: Nhân viên");
         }
+
+        this.dispose(); // đóng form login
     }
 }
 
 }
+
+
+

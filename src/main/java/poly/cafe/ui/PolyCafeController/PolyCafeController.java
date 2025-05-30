@@ -35,7 +35,7 @@ public interface PolyCafeController {
         default void exit(){
         if(XDialog.confirm("Bạn muốn kết thúc?")){
         System.exit(0);
-        }
+        }   
         }
         default void showJDialog(JDialog dialog){
         dialog.setLocationRelativeTo(null);
@@ -56,7 +56,7 @@ public interface PolyCafeController {
         default void showHistoryJDialog(JFrame frame){
         this.showJDialog(new HistoryJDialog(frame, true));
         }
-
+         
         default void showDrinkManagerJDialog(JFrame frame){
         this.showJDialog(new DrinkManagerJDialog(frame, true));
         }
