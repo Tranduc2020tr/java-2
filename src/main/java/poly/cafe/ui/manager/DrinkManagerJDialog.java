@@ -53,10 +53,9 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
                 int value = sd_giamgia.getValue();
                 txt_phantram.setText(value + "%");
             }
-        });
-        
-        // Load categories
+        });     
         fillCategories();
+        addListSelectionListener();
     }
 
     /**
@@ -627,7 +626,7 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
         DefaultTableModel model = (DefaultTableModel) tblCategories.getModel();
         model.setRowCount(0);
 
-        items = dao.findAll(); // Lấy tất cả đồ uống
+        items = dao.findAll();
 
         for (Drink drink : items) {
             Object[] row = {
@@ -753,7 +752,7 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
     public void deleteCheckedItems() {
         if (XDialog.confirm("Bạn thực sự muốn xóa các mục chọn?")) {
             for (int i = tblCategories.getRowCount() - 1; i >= 0; i--) {
-                Object value = tblCategories.getValueAt(i, 6); // Cột checkbox là cột 6 (chỉ số 6)
+                Object value = tblCategories.getValueAt(i, 6); 
                 boolean isChecked = false;
 
                 if (value instanceof Boolean) {
@@ -811,22 +810,22 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
 
     @Override
     public void fillCategories() {
-        // Lấy dữ liệu từ DAO
+      
         CategoryDAO cdao = new CategoryDAOImpl();
         categories = cdao.findAll();
 
-        // Gán cho JComboBox
+       
         DefaultComboBoxModel<Category> cboModel = new DefaultComboBoxModel<>();
         cbx_loaitraicay.setModel(cboModel);
 
-        // Gán cho JList<String>
+        
         DefaultListModel<String> listModel = new DefaultListModel<>();
         cbx_loaitraicay1.setModel(listModel);
 
         if (categories != null && !categories.isEmpty()) {
             for (Category category : categories) {
-                cboModel.addElement(category);            // ComboBox<Category>
-                listModel.addElement(category.getName()); // JList<String>
+                cboModel.addElement(category);            
+                listModel.addElement(category.getName()); 
             }
         }
     }
@@ -842,7 +841,7 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
         }
     }
 
-    // Lắng nghe chọn category từ JList để lọc bảng
+    
     private void addListSelectionListener() {
         cbx_loaitraicay1.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -877,7 +876,7 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
                 drink.getDiscount(),
                 drink.getUnitPrice() * (1 - drink.getDiscount()),
                 drink.isAvailable(),
-                false // checkbox
+                false 
             };
             model.addRow(row);
         }
