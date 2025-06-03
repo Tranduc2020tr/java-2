@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package poly.cafe.entity;
+
 import lombok.*;
 
 /**
@@ -14,6 +15,14 @@ import lombok.*;
 @Builder
 @Data
 public class Category {
- private String id;
- private String name;
+
+    private String id;
+    private String name;
+
+@Override
+public String toString() {
+    return name; // hoặc trường bạn muốn hiển thị
+}
+
+
 }

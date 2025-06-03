@@ -99,6 +99,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnBillManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 420, 130, 37));
 
         btnCategoryManager.setText("LOẠI ĐỒ UỐNG");
+        btnCategoryManager.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCategoryManagerActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnCategoryManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(614, 360, 130, 37));
 
         btnUserManager.setText("NGƯỜI SỬ DỤNG");
@@ -170,6 +175,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
     private void btnBillManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillManagerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBillManagerActionPerformed
+
+    private void btnCategoryManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoryManagerActionPerformed
+        // TODO add your handling code here:
+        this.showDrinkManagerJDialog(this);
+    }//GEN-LAST:event_btnCategoryManagerActionPerformed
 
     /**
      * @param args the command line arguments

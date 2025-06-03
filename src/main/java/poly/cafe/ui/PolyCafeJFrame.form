@@ -114,6 +114,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="LO&#x1ea0;I &#x110;&#x1ed2; U&#x1ed0;NG"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCategoryManagerActionPerformed"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="614" y="360" width="130" height="37"/>
