@@ -12,10 +12,17 @@ public class BillDetailDAOImpl implements BillDetailDAO {
     String createSql = "INSERT INTO BillDetails (BillId, DrinkId, UnitPrice, Discount, Quantity) VALUES (?, ?, ?, ?, ?)";
     String updateSql = "UPDATE BillDetails SET BillId = ?, DrinkId = ?, UnitPrice = ?, Discount = ?, Quantity = ? WHERE Id = ?";
     String deleteSql = "DELETE FROM BillDetails WHERE Id = ?";
-    String findAllSql = "SELECT * FROM BillDetails";
-    String findByIdSql = "SELECT * FROM BillDetails WHERE Id = ?";
-    String findByBillIdSql = "SELECT * FROM BillDetails WHERE BillId = ?";
-    String findByDrinkIdSql = "SELECT * FROM BillDetails WHERE DrinkId = ?";
+    
+
+    String findAllSql = """
+        SELECT bd.*, d.Name AS DrinkName 
+        FROM BillDetails bd 
+        JOIN Drinks d ON bd.DrinkId = d.Id
+    """;
+    String findByIdSql = findAllSql + " WHERE bd.Id = ?";
+    String findByBillIdSql = findAllSql + " WHERE bd.BillId = ?";
+    String findByDrinkIdSql = findAllSql + " WHERE bd.DrinkId = ?";
+    
 
     @Override
     public BillDetail create(BillDetail entity) {
@@ -79,6 +86,14 @@ public class BillDetailDAOImpl implements BillDetailDAO {
                 bd.setUnitPrice(rs.getDouble("UnitPrice"));
                 bd.setDiscount(rs.getDouble("Discount"));
                 bd.setQuantity(rs.getInt("Quantity"));
+                
+                // Gán thêm tên đồ uống nếu có cột
+                try {
+                    bd.setDrinkName(rs.getString("DrinkName"));
+                } catch (Exception e) {
+                    bd.setDrinkName(null); // Nếu không có cột này
+                }
+
                 list.add(bd);
             }
             rs.getStatement().getConnection().close();

@@ -20,4 +20,6 @@ public class BillDetail {
  private double unitPrice;
  private double discount;
  private int quantity;
+ 
+  private String drinkName;
 }

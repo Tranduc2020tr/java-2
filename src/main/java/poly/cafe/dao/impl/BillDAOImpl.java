@@ -2,10 +2,12 @@ package poly.cafe.dao.impl;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import poly.cafe.dao.BillDAO;
 import poly.cafe.entity.Bill;
 import poly.cafe.util.XJdbc;
+import poly.cafe.util.XQuery;
 
 public class BillDAOImpl implements BillDAO {
     String createSql = "INSERT INTO Bills (Username, CardId, Checkin, Checkout, Status) VALUES (?, ?, ?, ?, ?)";
@@ -15,6 +17,7 @@ public class BillDAOImpl implements BillDAO {
     String findByIdSql = "SELECT * FROM Bills WHERE Id=?";
     String findByUsernameSql = "SELECT * FROM Bills WHERE Username=?";
     String findByCardIdSql = "SELECT * FROM Bills WHERE CardId=?";
+     String findByTimeRangeSql = "SELECT * FROM Bills WHERE Checkin BETWEEN ? AND ? ORDER BY Checkin DESC";
 
     @Override
     public Bill create(Bill entity) {
@@ -85,5 +88,10 @@ public class BillDAOImpl implements BillDAO {
             throw new RuntimeException("lỗi bill em ơi", e);
         }
         return list;
+    }
+
+    @Override
+    public List<Bill> findByTimeRange(Date begin, Date end) {
+      return XQuery.getBeanList(Bill.class, findByTimeRangeSql, begin, end);  
     }
 }

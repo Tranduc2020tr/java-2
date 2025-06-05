@@ -108,17 +108,17 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
 
         tblCategories.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã đồ uống", "Tên đồ uống", "Đơn giá", "Giảm giá", "Trạng thái ", ""
+                "Mã đồ uống", "Tên đồ uống", "Đơn giá", "Giảm giá", "Giá ", "Trạng thái", ""
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -167,9 +167,9 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
                         .addComponent(jButton3)
                         .addGap(28, 28, 28))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -627,15 +627,16 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
         model.setRowCount(0);
 
         items = dao.findAll();
-
+        
         for (Drink drink : items) {
+             String status = drink.isAvailable()? "Còn Hàng" : "Hết Hàng";
             Object[] row = {
                 drink.getId(),
                 drink.getName(),
                 drink.getUnitPrice(),
                 drink.getDiscount(), 
                 drink.getUnitPrice() * (1 - drink.getDiscount()),
-                drink.isAvailable(),
+                status,
                 false  // checkbox
             };
             model.addRow(row);

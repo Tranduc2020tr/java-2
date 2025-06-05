@@ -4,11 +4,33 @@
  */
 package poly.cafe.ui.manager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import static javax.print.attribute.Size2DSyntax.MM;
+import javax.swing.table.DefaultTableModel;
+import poly.cafe.dao.BillDAO;
+import poly.cafe.dao.BillDetailDAO;
+import poly.cafe.dao.impl.BillDAOImpl;
+import poly.cafe.dao.impl.BillDetailDAOImpl;
+import poly.cafe.entity.Bill;
+import poly.cafe.entity.BillDetail;
+import poly.cafe.ui.BillController.BillController;
+import poly.cafe.util.TimeRange;
+import poly.cafe.util.XDate;
+import poly.cafe.util.XDialog;
+import poly.cafe.entity.Bill;
+
 /**
  *
  * @author hang
  */
-public class BillManagerJDialog extends javax.swing.JDialog {
+public class BillManagerJDialog extends javax.swing.JDialog implements BillController {
+
+    BillDAO dao = new BillDAOImpl();
+    List<Bill> items = List.of();
+    BillDetailDAO billDetailDao = new BillDetailDAOImpl();
+    List<BillDetail> details = List.of();
 
     /**
      * Creates new form BillManagerJDialog
@@ -16,6 +38,8 @@ public class BillManagerJDialog extends javax.swing.JDialog {
     public BillManagerJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        fillToTable();
+        fillBillDetails();
     }
 
     /**
@@ -27,21 +51,436 @@ public class BillManagerJDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnCheckAll1 = new javax.swing.JButton();
+        btnUncheckAll1 = new javax.swing.JButton();
+        btnDeleteCheckedItems1 = new javax.swing.JButton();
+        btg1 = new javax.swing.ButtonGroup();
+        tabs = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBills = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtBegin = new javax.swing.JTextField();
+        txtEnd = new javax.swing.JTextField();
+        cboTimeRanges = new javax.swing.JComboBox<>();
+        btnCheckAll2 = new javax.swing.JButton();
+        btnUncheckAll2 = new javax.swing.JButton();
+        btnDeleteCheckedItems2 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txt_khoitao = new javax.swing.JTextField();
+        txt_theso = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        txt_thanhtoan = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txt_nguoitao = new javax.swing.JTextField();
+        rd_sevicing = new javax.swing.JRadioButton();
+        rd_completed = new javax.swing.JRadioButton();
+        rd_canceled = new javax.swing.JRadioButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblBillDetails = new javax.swing.JTable();
+        btnUpdate = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnMoveFirst = new javax.swing.JButton();
+        btnMovePrevious = new javax.swing.JButton();
+        btnMoveNext = new javax.swing.JButton();
+        btnMoveLast = new javax.swing.JButton();
+
+        btnCheckAll1.setText("Chọn tất cả");
+        btnCheckAll1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckAll1ActionPerformed(evt);
+            }
+        });
+
+        btnUncheckAll1.setText("Bỏ chọn tất cả");
+        btnUncheckAll1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUncheckAll1ActionPerformed(evt);
+            }
+        });
+
+        btnDeleteCheckedItems1.setText("Xoá mục chọn");
+        btnDeleteCheckedItems1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteCheckedItems1ActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        tblBills.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Mã Phiếu", "Thẻ Số", "Thời Điểm Tạo", "Thời Điểm Thanh Toán", "Trạng Thái", "Email", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblBills);
+
+        jLabel1.setText("Từ ngày");
+
+        jLabel2.setText("Đến ngày");
+
+        cboTimeRanges.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hôm Này", "Tuần Này", "Tháng Này", "Quý Này", "Năm Nay" }));
+
+        btnCheckAll2.setText("Chọn tất cả");
+        btnCheckAll2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckAll2ActionPerformed(evt);
+            }
+        });
+
+        btnUncheckAll2.setText("Bỏ chọn tất cả");
+        btnUncheckAll2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUncheckAll2ActionPerformed(evt);
+            }
+        });
+
+        btnDeleteCheckedItems2.setText("Xoá mục chọn");
+        btnDeleteCheckedItems2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteCheckedItems2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(70, 70, 70)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtBegin, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50)
+                .addComponent(cboTimeRanges, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(397, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCheckAll2)
+                .addGap(56, 56, 56)
+                .addComponent(btnUncheckAll2)
+                .addGap(50, 50, 50)
+                .addComponent(btnDeleteCheckedItems2)
+                .addGap(36, 36, 36))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(txtBegin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboTimeRanges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(54, 54, 54)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCheckAll2)
+                    .addComponent(btnUncheckAll2)
+                    .addComponent(btnDeleteCheckedItems2))
+                .addContainerGap(74, Short.MAX_VALUE))
+        );
+
+        tabs.addTab("Danh sách", jPanel1);
+
+        jLabel3.setText("Mã Phiếu ");
+
+        jLabel4.setText("Thẻ Số");
+
+        jLabel5.setText("Thời Điểm Khởi Tạo");
+
+        jLabel6.setText("Thời Điểm Thanh Toán");
+
+        jLabel7.setText("Trạng Thái");
+
+        jLabel8.setText("Người Tạo");
+
+        btg1.add(rd_sevicing);
+        rd_sevicing.setText("Servicing");
+
+        btg1.add(rd_completed);
+        rd_completed.setText("Completed");
+
+        btg1.add(rd_canceled);
+        rd_canceled.setText("Canceled");
+
+        tblBillDetails.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Đồ Uống", "Đơn giá", "Giảm Giá", "Số lượng", "Thành Tiền"
+            }
+        ));
+        jScrollPane2.setViewportView(tblBillDetails);
+
+        btnUpdate.setText("Cập nhật");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnCreate.setText("Tạo mới");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
+
+        btnClear.setText("Nhập mới");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Xoá");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnMoveFirst.setText("|<");
+        btnMoveFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveFirstActionPerformed(evt);
+            }
+        });
+
+        btnMovePrevious.setText("<<");
+        btnMovePrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMovePreviousActionPerformed(evt);
+            }
+        });
+
+        btnMoveNext.setText(">>");
+        btnMoveNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveNextActionPerformed(evt);
+            }
+        });
+
+        btnMoveLast.setText(">|");
+        btnMoveLast.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoveLastActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_khoitao, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(rd_sevicing, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rd_completed, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rd_canceled, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_nguoitao, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_theso, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_thanhtoan, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(68, 68, 68))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1012, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(67, 67, 67)
+                .addComponent(btnCreate)
+                .addGap(22, 22, 22)
+                .addComponent(btnUpdate)
+                .addGap(19, 19, 19)
+                .addComponent(btnDelete)
+                .addGap(18, 18, 18)
+                .addComponent(btnClear)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnMoveFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnMovePrevious, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnMoveNext, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnMoveLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_theso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(42, 42, 42)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_khoitao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_thanhtoan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_nguoitao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rd_sevicing)
+                    .addComponent(rd_completed)
+                    .addComponent(rd_canceled))
+                .addGap(44, 44, 44)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnCreate)
+                    .addComponent(btnDelete)
+                    .addComponent(btnClear)
+                    .addComponent(btnMoveFirst)
+                    .addComponent(btnMovePrevious)
+                    .addComponent(btnMoveNext)
+                    .addComponent(btnMoveLast))
+                .addContainerGap())
+        );
+
+        tabs.addTab("Biểu mẫu", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(tabs)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        this.update();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        // TODO add your handling code here:
+        this.create();
+    }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        // TODO add your handling code here:
+        this.clear();
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        this.delete();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnMoveFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveFirstActionPerformed
+        // TODO add your handling code here:
+        this.moveFirst();
+    }//GEN-LAST:event_btnMoveFirstActionPerformed
+
+    private void btnMovePreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovePreviousActionPerformed
+        // TODO add your handling code here:
+        this.movePrevious();
+    }//GEN-LAST:event_btnMovePreviousActionPerformed
+
+    private void btnMoveNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveNextActionPerformed
+        this.moveNext();
+    }//GEN-LAST:event_btnMoveNextActionPerformed
+
+    private void btnMoveLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveLastActionPerformed
+        this.moveLast();
+    }//GEN-LAST:event_btnMoveLastActionPerformed
+
+    private void btnCheckAll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckAll1ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnCheckAll1ActionPerformed
+
+    private void btnUncheckAll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUncheckAll1ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnUncheckAll1ActionPerformed
+
+    private void btnDeleteCheckedItems1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCheckedItems1ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_btnDeleteCheckedItems1ActionPerformed
+
+    private void btnCheckAll2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckAll2ActionPerformed
+        // TODO add your handling code here:
+        this.checkAll();
+    }//GEN-LAST:event_btnCheckAll2ActionPerformed
+
+    private void btnUncheckAll2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUncheckAll2ActionPerformed
+        // TODO add your handling code here:
+        this.uncheckAll();
+    }//GEN-LAST:event_btnUncheckAll2ActionPerformed
+
+    private void btnDeleteCheckedItems2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCheckedItems2ActionPerformed
+        // TODO add your handling code here:
+        this.deleteCheckedItems();
+    }//GEN-LAST:event_btnDeleteCheckedItems2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -86,5 +525,412 @@ public class BillManagerJDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btg1;
+    private javax.swing.JButton btnCheckAll1;
+    private javax.swing.JButton btnCheckAll2;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDeleteCheckedItems1;
+    private javax.swing.JButton btnDeleteCheckedItems2;
+    private javax.swing.JButton btnMoveFirst;
+    private javax.swing.JButton btnMoveLast;
+    private javax.swing.JButton btnMoveNext;
+    private javax.swing.JButton btnMovePrevious;
+    private javax.swing.JButton btnUncheckAll1;
+    private javax.swing.JButton btnUncheckAll2;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cboTimeRanges;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JRadioButton rd_canceled;
+    private javax.swing.JRadioButton rd_completed;
+    private javax.swing.JRadioButton rd_sevicing;
+    private javax.swing.JTabbedPane tabs;
+    private javax.swing.JTable tblBillDetails;
+    private javax.swing.JTable tblBills;
+    private javax.swing.JTextField txtBegin;
+    private javax.swing.JTextField txtEnd;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txt_khoitao;
+    private javax.swing.JTextField txt_nguoitao;
+    private javax.swing.JTextField txt_thanhtoan;
+    private javax.swing.JTextField txt_theso;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void fillBillDetails() {
+        DefaultTableModel model = (DefaultTableModel) tblBillDetails.getModel();
+        model.setRowCount(0);
+        details = List.of();
+        if (!txtId.getText().isBlank()) {
+            Long billId = Long.valueOf(txtId.getText());
+            details = billDetailDao.findByBillId(billId);
+        }
+        details.forEach(d -> {
+            var amount = d.getUnitPrice() * d.getQuantity() * (1 - d.getDiscount());
+            Object[] rowData = {
+                d.getDrinkName(),
+                String.format("%.1f VNĐ", d.getUnitPrice()),
+                String.format("%.0f%%", d.getDiscount() * 100),
+                d.getQuantity(), String.format("%.1f VNĐ", amount)
+            };
+            model.addRow(rowData);
+        });
+
+    }
+
+    @Override
+    public void selectTimeRange() {
+        TimeRange range = TimeRange.today();
+        switch (cboTimeRanges.getSelectedIndex()) {
+            case 0 ->
+                range = TimeRange.today();
+            case 1 ->
+                range = TimeRange.thisWeek();
+            case 2 ->
+                range = TimeRange.thisMonth();
+            case 3 ->
+                range = TimeRange.thisQuarter();
+            case 4 ->
+                range = TimeRange.thisYear();
+        }
+        txtBegin.setText(XDate.format(range.getBegin(), "MM/dd/yyyy"));
+        txtEnd.setText(XDate.format(range.getEnd(), "MM/dd/yyyy"));
+        this.fillToTable();
+    }
+
+    @Override
+    public void open() {
+        this.setLocationRelativeTo(null);
+        this.selectTimeRange();
+        this.clear();
+
+    }
+
+    @Override
+    public void setForm(Bill entity) {
+        // Set các textfield an toàn
+        txtId.setText(entity.getId() != null ? String.valueOf(entity.getId()) : "");
+        txt_theso.setText(entity.getCardId() != null ? String.valueOf(entity.getCardId()) : "");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+        txt_khoitao.setText(entity.getCheckin() != null ? sdf.format(entity.getCheckin()) : "");
+        txt_thanhtoan.setText(entity.getCheckout() != null ? sdf.format(entity.getCheckout()) : "");
+
+        txt_nguoitao.setText(entity.getUsername() != null ? entity.getUsername() : "");
+
+        // Set trạng thái radio button
+        switch (entity.getStatus()) {
+            case 0 -> {
+                rd_canceled.setSelected(true);
+                rd_completed.setSelected(false);
+                rd_sevicing.setSelected(false);
+            }
+            case 1 -> {
+                rd_canceled.setSelected(false);
+                rd_completed.setSelected(true);
+                rd_sevicing.setSelected(false);
+            }
+            case 2 -> {
+                rd_canceled.setSelected(false);
+                rd_completed.setSelected(false);
+                rd_sevicing.setSelected(true);
+            }
+            default -> {
+                // Nếu status không hợp lệ thì bỏ chọn tất cả
+                rd_canceled.setSelected(false);
+                rd_completed.setSelected(false);
+                rd_sevicing.setSelected(false);
+            }
+        }
+
+        this.fillBillDetails();
+    }
+
+
+
+    @Override
+    public Bill getForm() {
+        Bill entity = new Bill();
+        // Kiểm tra và set ID (Long)
+        String idText = txtId.getText();
+        if (idText != null && !idText.isBlank() && !idText.equalsIgnoreCase("null")) {
+            try {
+                entity.setId(Long.valueOf(idText));
+            } catch (NumberFormatException e) {
+                XDialog.alert("ID không hợp lệ: " + idText);
+                return null; // hoặc xử lý khác
+            }
+        } else {
+            XDialog.alert("ID không được để trống.");
+            return null;
+        }
+
+// Kiểm tra và set CardId (Integer)
+        String cardIdText = txt_theso.getText();
+        if (cardIdText != null && !cardIdText.isBlank() && !cardIdText.equalsIgnoreCase("null")) {
+            try {
+                entity.setCardId(Integer.valueOf(cardIdText));
+            } catch (NumberFormatException e) {
+                XDialog.alert("Mã thẻ không hợp lệ: " + cardIdText);
+                return null;
+            }
+        } else {
+            XDialog.alert("Mã thẻ không được để trống.");
+            return null;
+        }
+
+
+        try {
+            String text = txt_khoitao.getText(); // lấy chuỗi từ JTextField
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");  // sửa định dạng ở đây
+            Date checkinDate = sdf.parse(text); // chuyển về java.util.Date
+
+            entity.setCheckin(checkinDate); // truyền đúng kiểu
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String text = txt_thanhtoan.getText();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");  // sửa định dạng
+            Date checkoutDate = sdf.parse(text);
+
+            entity.setCheckout(checkoutDate); // chú ý, có vẻ bạn muốn set checkout chứ không phải checkin 2 lần
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        entity.setUsername(txt_nguoitao.getText());
+
+        switch (entity.getStatus()) {
+            case 0 ->
+                rd_canceled.setSelected(true);
+            case 1 ->
+                rd_completed.setSelected(true);
+            case 2 ->
+                rd_sevicing.setSelected(true);
+            default ->
+                XDialog.alert("lỗi rồi mẹ ơi");
+        }
+
+        return entity;
+    }
+
+@Override
+public void fillToTable() {
+    DefaultTableModel model = (DefaultTableModel) tblBills.getModel();
+    model.setRowCount(0);
+
+    Date begin = null, end = null;
+    try {
+        begin = XDate.parse(txtBegin.getText(), "yyyy-MM-dd");
+        end = XDate.parse(txtEnd.getText(), "yyyy-MM-dd");
+    } catch (Exception e) {
+        e.printStackTrace();
+        XDialog.alert("Lỗi định dạng ngày. Định dạng đúng: yyyy-MM-dd");
+        return;
+    }
+
+    if (begin == null || end == null) {
+        XDialog.alert("Ngày bắt đầu hoặc kết thúc không hợp lệ.");
+        return;
+    }
+
+    // Gọi DAO lọc theo thời gian
+    items = dao.findByTimeRange(begin, end);
+    if (items == null || items.isEmpty()) {
+        System.out.println("Không tìm thấy hóa đơn trong khoảng thời gian đã chọn.");
+        return;
+    }
+
+    // Hiển thị từng bản ghi lên bảng
+    items.forEach(item -> {
+        String status;
+        switch (item.getStatus()) {
+            case 1 -> status = "Servicing";
+            case 2 -> status = "Completed";
+            case 0 -> status = "Canceled";
+            default -> status = "Unknown";
+        }
+
+        Object[] rowData = {
+            item.getId(),
+            item.getCardId(),
+            item.getCheckin(),
+            item.getCheckout(),
+            status,
+            item.getUsername(),
+            false // checkbox
+        };
+
+        model.addRow(rowData);
+    });
+}
+
+
+
+
+    
+
+    @Override
+    public void edit() {
+        int index = tblBills.getSelectedRow();
+        Bill entity = items.get(index);
+        this.setForm(entity);
+        this.setEditable(true);
+        tabs.setSelectedIndex(1);
+    }
+
+  @Override
+public void create() {
+    Bill entity = getForm();
+    if (entity == null) return;
+
+    try {
+        dao.create(entity);
+        XDialog.alert("Tạo mới thành công!");
+
+        this.selectTimeRange(); // <<< gọi lại để thiết lập thời gian hợp lý
+        this.clear();
+    } catch (RuntimeException e) {
+        XDialog.alert("Lỗi tạo hóa đơn: " + e.getMessage());
+    }
+}
+
+
+    @Override
+    public void update() {
+        Bill entity = this.getForm();
+        dao.update(entity);
+        this.fillToTable();
+    }
+
+    @Override
+    public void delete() {
+        if (XDialog.confirm("Bạn thực sự muốn xóa?")) {
+            long id = Integer.parseInt(txtId.getText());
+            dao.deleteById(id);
+            this.fillToTable();
+            this.clear();
+        }
+    }
+
+    @Override
+    public void clear() {
+        this.setForm(new Bill());
+        this.setEditable(false);
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        if (!editable) {
+
+            txtId.setEnabled(true);
+            btnCreate.setEnabled(true);
+            btnUpdate.setEnabled(true);
+            btnDelete.setEnabled(true);
+
+            rd_canceled.setEnabled(true);
+            rd_completed.setEnabled(true);
+            rd_sevicing.setEnabled(true);
+
+            int rowCount = tblBills.getRowCount();
+            boolean hasRows = rowCount > 0;
+            btnMoveFirst.setEnabled(hasRows);
+            btnMovePrevious.setEnabled(hasRows);
+            btnMoveNext.setEnabled(hasRows);
+            btnMoveLast.setEnabled(hasRows);
+        } else {
+            // Trạng thái chỉnh sửa
+            txtId.setEnabled(false);
+            btnCreate.setEnabled(false);
+            btnUpdate.setEnabled(true);
+            btnDelete.setEnabled(true);
+
+            rd_canceled.setEnabled(true);
+            rd_completed.setEnabled(true);
+            rd_sevicing.setEnabled(true);
+
+            int rowCount = tblBills.getRowCount();
+            boolean hasRows = rowCount > 0;
+            btnMoveFirst.setEnabled(hasRows);
+            btnMovePrevious.setEnabled(hasRows);
+            btnMoveNext.setEnabled(hasRows);
+            btnMoveLast.setEnabled(hasRows);
+        }
+    }
+
+    @Override
+    public void checkAll() {
+        this.setCheckedAll(true);
+    }
+
+    @Override
+    public void uncheckAll() {
+        this.setCheckedAll(false);
+    }
+
+    @Override
+    public void deleteCheckedItems() {
+        if (XDialog.confirm("Bạn thực sự muốn xóa các mục chọn?")) {
+            for (int i = 0; i < tblBills.getRowCount(); i++) {
+                if ((Boolean) tblBills.getValueAt(i, 7)) {
+                    dao.deleteById(items.get(i).getId());
+                }
+            }
+            this.fillToTable();
+        }
+    }
+
+    @Override
+    public void moveFirst() {
+        this.moveTo(0);
+    }
+
+    @Override
+    public void movePrevious() {
+        this.moveTo(tblBills.getSelectedRow() - 1);
+    }
+
+    @Override
+    public void moveNext() {
+        this.moveTo(tblBills.getRowCount() + 1);
+    }
+
+    @Override
+    public void moveLast() {
+        this.moveTo(tblBills.getRowCount() - 1);
+    }
+
+    @Override
+    public void moveTo(int index) {
+        if (index < 0) {
+            this.moveLast();
+        } else if (index >= tblBills.getRowCount()) {
+            this.moveFirst();
+        } else {
+            tblBills.clearSelection();
+            tblBills.setRowSelectionInterval(index, index);
+            this.edit();
+        }
+    }
+
+    private void setCheckedAll(boolean b) {
+        for (int i = 0; i < tblBills.getRowCount(); i++) {
+            tblBills.setValueAt(b, i, 6);
+        }
+    }
+    
 }
