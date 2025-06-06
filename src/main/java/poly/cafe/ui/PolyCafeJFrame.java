@@ -174,6 +174,7 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
 
     private void btnBillManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillManagerActionPerformed
         // TODO add your handling code here:
+        this.showBillManagerJDialog(this);
     }//GEN-LAST:event_btnBillManagerActionPerformed
 
     private void btnCategoryManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoryManagerActionPerformed

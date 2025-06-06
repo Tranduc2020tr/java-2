@@ -5,7 +5,6 @@
 package poly.cafe.ui.CategoryController;
 
 import java.util.List;
-import javax.swing.table.DefaultTableModel;
 import poly.cafe.dao.CategoryDAO;
 import poly.cafe.dao.impl.CategoryDAOImpl;
 import poly.cafe.entity.Category;

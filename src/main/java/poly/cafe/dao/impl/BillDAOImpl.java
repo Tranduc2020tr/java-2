@@ -92,6 +92,6 @@ public class BillDAOImpl implements BillDAO {
 
     @Override
     public List<Bill> findByTimeRange(Date begin, Date end) {
-      return XQuery.getBeanList(Bill.class, findByTimeRangeSql, begin, end);  
+        return selectBySql(findByTimeRangeSql, begin, end);
     }
 }

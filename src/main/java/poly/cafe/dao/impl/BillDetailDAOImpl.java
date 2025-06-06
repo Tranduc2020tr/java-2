@@ -9,20 +9,20 @@ import poly.cafe.util.XJdbc;
 
 public class BillDetailDAOImpl implements BillDetailDAO {
 
-    String createSql = "INSERT INTO BillDetails (BillId, DrinkId, UnitPrice, Discount, Quantity) VALUES (?, ?, ?, ?, ?)";
-    String updateSql = "UPDATE BillDetails SET BillId = ?, DrinkId = ?, UnitPrice = ?, Discount = ?, Quantity = ? WHERE Id = ?";
-    String deleteSql = "DELETE FROM BillDetails WHERE Id = ?";
-    
+    private final String createSql = "INSERT INTO BillDetails (BillId, DrinkId, UnitPrice, Discount, Quantity) VALUES (?, ?, ?, ?, ?)";
+    private final String updateSql = "UPDATE BillDetails SET BillId = ?, DrinkId = ?, UnitPrice = ?, Discount = ?, Quantity = ? WHERE Id = ?";
+    private final String deleteSql = "DELETE FROM BillDetails WHERE Id = ?";
 
-    String findAllSql = """
+    // Tất cả SELECT đều JOIN với Drinks để có DrinkName
+    private final String baseSelectSql = """
         SELECT bd.*, d.Name AS DrinkName 
         FROM BillDetails bd 
         JOIN Drinks d ON bd.DrinkId = d.Id
     """;
-    String findByIdSql = findAllSql + " WHERE bd.Id = ?";
-    String findByBillIdSql = findAllSql + " WHERE bd.BillId = ?";
-    String findByDrinkIdSql = findAllSql + " WHERE bd.DrinkId = ?";
-    
+    private final String findAllSql = baseSelectSql;
+    private final String findByIdSql = baseSelectSql + " WHERE bd.Id = ?";
+    private final String findByBillIdSql = baseSelectSql + " WHERE bd.BillId = ?";
+    private final String findByDrinkIdSql = baseSelectSql + " WHERE bd.DrinkId = ?";
 
     @Override
     public BillDetail create(BillDetail entity) {
@@ -86,18 +86,14 @@ public class BillDetailDAOImpl implements BillDetailDAO {
                 bd.setUnitPrice(rs.getDouble("UnitPrice"));
                 bd.setDiscount(rs.getDouble("Discount"));
                 bd.setQuantity(rs.getInt("Quantity"));
-                
-                // Gán thêm tên đồ uống nếu có cột
-                try {
-                    bd.setDrinkName(rs.getString("DrinkName"));
-                } catch (Exception e) {
-                    bd.setDrinkName(null); // Nếu không có cột này
-                }
+                bd.setDrinkName(rs.getString("DrinkName")); // Không cần try-catch nữa
 
                 list.add(bd);
             }
             rs.getStatement().getConnection().close();
         } catch (Exception e) {
+            System.err.println("❌ Lỗi khi thực thi SQL: " + sql);
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return list;

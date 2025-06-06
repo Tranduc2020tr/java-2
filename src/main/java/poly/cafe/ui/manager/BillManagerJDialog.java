@@ -4,22 +4,29 @@
  */
 package poly.cafe.ui.manager;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import static javax.print.attribute.Size2DSyntax.MM;
 import javax.swing.table.DefaultTableModel;
 import poly.cafe.dao.BillDAO;
 import poly.cafe.dao.BillDetailDAO;
+import poly.cafe.dao.DrinkDAO;
 import poly.cafe.dao.impl.BillDAOImpl;
 import poly.cafe.dao.impl.BillDetailDAOImpl;
+import poly.cafe.dao.impl.DrinkDAOImpl;
 import poly.cafe.entity.Bill;
 import poly.cafe.entity.BillDetail;
+import poly.cafe.entity.Drink;
 import poly.cafe.ui.BillController.BillController;
 import poly.cafe.util.TimeRange;
 import poly.cafe.util.XDate;
 import poly.cafe.util.XDialog;
-import poly.cafe.entity.Bill;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  *
@@ -28,8 +35,9 @@ import poly.cafe.entity.Bill;
 public class BillManagerJDialog extends javax.swing.JDialog implements BillController {
 
     BillDAO dao = new BillDAOImpl();
-    List<Bill> items = List.of();
     BillDetailDAO billDetailDao = new BillDetailDAOImpl();
+    DrinkDAO drinkDao = new DrinkDAOImpl();
+    List<Bill> items = List.of();
     List<BillDetail> details = List.of();
 
     /**
@@ -38,8 +46,7 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
     public BillManagerJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        fillToTable();
-        fillBillDetails();
+        cboTimeRanges.addActionListener(e -> selectTimeRange());
     }
 
     /**
@@ -133,6 +140,11 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        tblBills.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBillsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tblBills);
@@ -232,6 +244,11 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
 
         btg1.add(rd_canceled);
         rd_canceled.setText("Canceled");
+        rd_canceled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rd_canceledActionPerformed(evt);
+            }
+        });
 
         tblBillDetails.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -482,6 +499,15 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
         this.deleteCheckedItems();
     }//GEN-LAST:event_btnDeleteCheckedItems2ActionPerformed
 
+    private void tblBillsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBillsMouseClicked
+        // TODO add your handling code here:
+        this.edit();
+    }//GEN-LAST:event_tblBillsMouseClicked
+
+    private void rd_canceledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_canceledActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rd_canceledActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -568,292 +594,263 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
     private javax.swing.JTextField txt_theso;
     // End of variables declaration//GEN-END:variables
 
+
     @Override
     public void fillBillDetails() {
         DefaultTableModel model = (DefaultTableModel) tblBillDetails.getModel();
         model.setRowCount(0);
         details = List.of();
+
         if (!txtId.getText().isBlank()) {
             Long billId = Long.valueOf(txtId.getText());
             details = billDetailDao.findByBillId(billId);
         }
-        details.forEach(d -> {
-            var amount = d.getUnitPrice() * d.getQuantity() * (1 - d.getDiscount());
+
+        for (BillDetail d : details) {
+            Drink drink = drinkDao.findById(d.getDrinkId());
+            double amount = d.getUnitPrice() * d.getQuantity() * (1 - d.getDiscount());
+
             Object[] rowData = {
-                d.getDrinkName(),
+                drink != null ? drink.getName() : "Unknown",
                 String.format("%.1f VNĐ", d.getUnitPrice()),
                 String.format("%.0f%%", d.getDiscount() * 100),
-                d.getQuantity(), String.format("%.1f VNĐ", amount)
+                d.getQuantity(),
+                String.format("%.1f VNĐ", amount)
             };
-            model.addRow(rowData);
-        });
 
+            model.addRow(rowData);
+        }
     }
 
     @Override
     public void selectTimeRange() {
-        TimeRange range = TimeRange.today();
-        switch (cboTimeRanges.getSelectedIndex()) {
+        TimeRange range = switch (cboTimeRanges.getSelectedIndex()) {
             case 0 ->
-                range = TimeRange.today();
+                TimeRange.today();
             case 1 ->
-                range = TimeRange.thisWeek();
+                TimeRange.thisWeek();
             case 2 ->
-                range = TimeRange.thisMonth();
+                TimeRange.thisMonth();
             case 3 ->
-                range = TimeRange.thisQuarter();
+                TimeRange.thisQuarter();
             case 4 ->
-                range = TimeRange.thisYear();
-        }
-        txtBegin.setText(XDate.format(range.getBegin(), "MM/dd/yyyy"));
-        txtEnd.setText(XDate.format(range.getEnd(), "MM/dd/yyyy"));
-        this.fillToTable();
+                TimeRange.thisYear();
+            default ->
+                TimeRange.today();
+        };
+
+        txtBegin.setText(XDate.format(range.getBegin(), "HH:mm:ss dd-MM-yyyy"));
+        txtEnd.setText(XDate.format(range.getEnd(), "HH:mm:ss dd-MM-yyyy"));
+
+        fillToTable();
     }
 
     @Override
     public void open() {
-        this.setLocationRelativeTo(null);
-        this.selectTimeRange();
-        this.clear();
-
+        setLocationRelativeTo(null);
+        selectTimeRange();
+        clear();
     }
 
     @Override
     public void setForm(Bill entity) {
-        // Set các textfield an toàn
         txtId.setText(entity.getId() != null ? String.valueOf(entity.getId()) : "");
         txt_theso.setText(entity.getCardId() != null ? String.valueOf(entity.getCardId()) : "");
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
-        txt_khoitao.setText(entity.getCheckin() != null ? sdf.format(entity.getCheckin()) : "");
-        txt_thanhtoan.setText(entity.getCheckout() != null ? sdf.format(entity.getCheckout()) : "");
-
+        txt_khoitao.setText(entity.getCheckin() != null ? XDate.format(entity.getCheckin(), "HH:mm:ss dd-MM-yyyy") : "");
+        txt_thanhtoan.setText(entity.getCheckout() != null ? XDate.format(entity.getCheckout(), "HH:mm:ss dd-MM-yyyy") : "");
         txt_nguoitao.setText(entity.getUsername() != null ? entity.getUsername() : "");
 
-        // Set trạng thái radio button
-        switch (entity.getStatus()) {
-            case 0 -> {
-                rd_canceled.setSelected(true);
-                rd_completed.setSelected(false);
-                rd_sevicing.setSelected(false);
-            }
-            case 1 -> {
-                rd_canceled.setSelected(false);
-                rd_completed.setSelected(true);
-                rd_sevicing.setSelected(false);
-            }
-            case 2 -> {
-                rd_canceled.setSelected(false);
-                rd_completed.setSelected(false);
-                rd_sevicing.setSelected(true);
-            }
-            default -> {
-                // Nếu status không hợp lệ thì bỏ chọn tất cả
-                rd_canceled.setSelected(false);
-                rd_completed.setSelected(false);
-                rd_sevicing.setSelected(false);
-            }
-        }
+        rd_canceled.setSelected(entity.getStatus() == 0);
+        rd_completed.setSelected(entity.getStatus() == 1);
+        rd_sevicing.setSelected(entity.getStatus() == 2);
 
-        this.fillBillDetails();
+        fillBillDetails();
     }
-
-
 
     @Override
     public Bill getForm() {
         Bill entity = new Bill();
-        // Kiểm tra và set ID (Long)
-        String idText = txtId.getText();
-        if (idText != null && !idText.isBlank() && !idText.equalsIgnoreCase("null")) {
-            try {
-                entity.setId(Long.valueOf(idText));
-            } catch (NumberFormatException e) {
-                XDialog.alert("ID không hợp lệ: " + idText);
-                return null; // hoặc xử lý khác
+
+        try {
+            if (!txtId.getText().trim().isEmpty()) {
+                entity.setId(Long.valueOf(txtId.getText().trim()));
             }
-        } else {
-            XDialog.alert("ID không được để trống.");
+        } catch (NumberFormatException e) {
+            XDialog.alert("ID không hợp lệ.");
             return null;
         }
 
-// Kiểm tra và set CardId (Integer)
-        String cardIdText = txt_theso.getText();
-        if (cardIdText != null && !cardIdText.isBlank() && !cardIdText.equalsIgnoreCase("null")) {
-            try {
-                entity.setCardId(Integer.valueOf(cardIdText));
-            } catch (NumberFormatException e) {
-                XDialog.alert("Mã thẻ không hợp lệ: " + cardIdText);
-                return null;
-            }
-        } else {
-            XDialog.alert("Mã thẻ không được để trống.");
+        try {
+            entity.setCardId(Integer.valueOf(txt_theso.getText().trim()));
+        } catch (NumberFormatException e) {
+            XDialog.alert("Thẻ số không hợp lệ.");
             return null;
         }
 
-
         try {
-            String text = txt_khoitao.getText(); // lấy chuỗi từ JTextField
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");  // sửa định dạng ở đây
-            Date checkinDate = sdf.parse(text); // chuyển về java.util.Date
-
-            entity.setCheckin(checkinDate); // truyền đúng kiểu
+            entity.setCheckin(XDate.parse(txt_khoitao.getText().trim(), "HH:mm:ss dd-MM-yyyy"));
         } catch (Exception e) {
-            e.printStackTrace();
+            XDialog.alert("Sai định dạng thời gian tạo.");
+            return null;
         }
 
         try {
-            String text = txt_thanhtoan.getText();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");  // sửa định dạng
-            Date checkoutDate = sdf.parse(text);
-
-            entity.setCheckout(checkoutDate); // chú ý, có vẻ bạn muốn set checkout chứ không phải checkin 2 lần
+            String checkoutText = txt_thanhtoan.getText().trim();
+            if (!checkoutText.isEmpty()) {
+                entity.setCheckout(XDate.parse(checkoutText, "HH:mm:ss dd-MM-yyyy"));
+            } else {
+                entity.setCheckout(entity.getCheckin());
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            XDialog.alert("Sai định dạng thời gian thanh toán.");
+            return null;
         }
 
-        entity.setUsername(txt_nguoitao.getText());
+        String username = txt_nguoitao.getText();
+        entity.setUsername((username != null && !username.trim().isEmpty()) ? username.trim() : "unknown");
 
-        switch (entity.getStatus()) {
-            case 0 ->
-                rd_canceled.setSelected(true);
-            case 1 ->
-                rd_completed.setSelected(true);
-            case 2 ->
-                rd_sevicing.setSelected(true);
-            default ->
-                XDialog.alert("lỗi rồi mẹ ơi");
+        if (rd_completed.isSelected()) {
+            entity.setStatus(1);
+        } else if (rd_sevicing.isSelected()) {
+            entity.setStatus(2);
+        } else {
+            entity.setStatus(0);
         }
 
         return entity;
     }
 
-@Override
-public void fillToTable() {
-    DefaultTableModel model = (DefaultTableModel) tblBills.getModel();
-    model.setRowCount(0);
-
-    Date begin = null, end = null;
-    try {
-        begin = XDate.parse(txtBegin.getText(), "yyyy-MM-dd");
-        end = XDate.parse(txtEnd.getText(), "yyyy-MM-dd");
-    } catch (Exception e) {
-        e.printStackTrace();
-        XDialog.alert("Lỗi định dạng ngày. Định dạng đúng: yyyy-MM-dd");
-        return;
-    }
-
-    if (begin == null || end == null) {
-        XDialog.alert("Ngày bắt đầu hoặc kết thúc không hợp lệ.");
-        return;
-    }
-
-    // Gọi DAO lọc theo thời gian
-    items = dao.findByTimeRange(begin, end);
-    if (items == null || items.isEmpty()) {
-        System.out.println("Không tìm thấy hóa đơn trong khoảng thời gian đã chọn.");
-        return;
-    }
-
-    // Hiển thị từng bản ghi lên bảng
-    items.forEach(item -> {
-        String status;
-        switch (item.getStatus()) {
-            case 1 -> status = "Servicing";
-            case 2 -> status = "Completed";
-            case 0 -> status = "Canceled";
-            default -> status = "Unknown";
+    @Override
+    public void fillToTable() {
+        DefaultTableModel model = (DefaultTableModel) tblBills.getModel();
+        model.setRowCount(0);
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+            SimpleDateFormat displayFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            Date begin = inputFormat.parse(txtBegin.getText().trim());
+            Date end = inputFormat.parse(txtEnd.getText().trim());
+            Timestamp tsBegin = new Timestamp(begin.getTime());
+            Timestamp tsEnd = new Timestamp(end.getTime());
+            items = dao.findByTimeRange(tsBegin, tsEnd);
+            for (Bill bill : items) {
+                String status;
+                switch (bill.getStatus()) {
+                    case 0 ->
+                        status = "Canceled";
+                    case 1 ->
+                        status = "Completed";
+                    case 2 ->
+                        status = "Servicing";
+                    default ->
+                        status = "Unknown";
+                }
+                model.addRow(new Object[]{
+                    bill.getId(),
+                    bill.getCardId(),
+                    bill.getCheckin() != null ? displayFormat.format(bill.getCheckin()) : "",
+                    bill.getCheckout() != null ? displayFormat.format(bill.getCheckout()) : "",
+                    status,
+                    bill.getUsername(),
+                    false
+                });
+            }
+        } catch (Exception e) {
+            XDialog.alert("Sai định dạng ngày giờ hoặc lỗi dữ liệu.");
         }
-
-        Object[] rowData = {
-            item.getId(),
-            item.getCardId(),
-            item.getCheckin(),
-            item.getCheckout(),
-            status,
-            item.getUsername(),
-            false // checkbox
-        };
-
-        model.addRow(rowData);
-    });
-}
-
-
-
-
-    
+    }
 
     @Override
     public void edit() {
         int index = tblBills.getSelectedRow();
-        Bill entity = items.get(index);
-        this.setForm(entity);
-        this.setEditable(true);
-        tabs.setSelectedIndex(1);
+        if (index < 0) {
+            XDialog.alert("Vui lòng chọn một hóa đơn để chỉnh sửa");
+            return;
+        }
+        try {
+            Long id = (Long) tblBills.getValueAt(index, 0);
+            Bill entity = dao.findById(id);
+            if (entity != null) {
+                this.setForm(entity);
+                this.setEditable(true);
+                tabs.setSelectedIndex(1);
+            } else {
+                XDialog.alert("Không tìm thấy hóa đơn");
+            }
+        } catch (Exception e) {
+            XDialog.alert("Lỗi khi chỉnh sửa: " + e.getMessage());
+        }
     }
 
-  @Override
-public void create() {
-    Bill entity = getForm();
-    if (entity == null) return;
+    @Override
+    public void create() {
+        Bill entity = getForm();
+        if (entity == null) {
+            return;
+        }
+        try {
+            dao.create(entity);
+            XDialog.alert("Tạo mới thành công!");
 
-    try {
-        dao.create(entity);
-        XDialog.alert("Tạo mới thành công!");
-
-        this.selectTimeRange(); // <<< gọi lại để thiết lập thời gian hợp lý
-        this.clear();
-    } catch (RuntimeException e) {
-        XDialog.alert("Lỗi tạo hóa đơn: " + e.getMessage());
+            this.selectTimeRange();
+            this.clear();
+            txt_khoitao.setText("");
+        } catch (RuntimeException e) {
+            XDialog.alert("Lỗi tạo hóa đơn: " + e.getMessage());
+        }
+        fillToTable();
     }
-}
-
 
     @Override
     public void update() {
         Bill entity = this.getForm();
         dao.update(entity);
+        XDialog.alert("update thành công!");
         this.fillToTable();
     }
 
     @Override
     public void delete() {
         if (XDialog.confirm("Bạn thực sự muốn xóa?")) {
-            long id = Integer.parseInt(txtId.getText());
-            dao.deleteById(id);
-            this.fillToTable();
-            this.clear();
+            try {
+                long id = Long.parseLong(txtId.getText());
+                dao.deleteById(id);
+                this.fillToTable();
+                this.clear();
+            } catch (NumberFormatException e) {
+                XDialog.alert("ID không hợp lệ");
+            } catch (Exception e) {
+                XDialog.alert("Lỗi khi xóa: " + e.getMessage());
+            }
         }
     }
 
     @Override
     public void clear() {
         this.setForm(new Bill());
+        txtId.setText("");
+        txt_theso.setText("");
+        txt_nguoitao.setText("");
+        txt_thanhtoan.setText("");
+        txt_khoitao.setText("");
+        btg1.clearSelection();
+        DefaultTableModel model = (DefaultTableModel) tblBillDetails.getModel();
+        model.setRowCount(0);
+
         this.setEditable(false);
     }
 
     @Override
     public void setEditable(boolean editable) {
         if (!editable) {
-
             txtId.setEnabled(true);
             btnCreate.setEnabled(true);
-            btnUpdate.setEnabled(true);
-            btnDelete.setEnabled(true);
+            btnUpdate.setEnabled(false);
+            btnDelete.setEnabled(false);
 
             rd_canceled.setEnabled(true);
             rd_completed.setEnabled(true);
             rd_sevicing.setEnabled(true);
-
-            int rowCount = tblBills.getRowCount();
-            boolean hasRows = rowCount > 0;
-            btnMoveFirst.setEnabled(hasRows);
-            btnMovePrevious.setEnabled(hasRows);
-            btnMoveNext.setEnabled(hasRows);
-            btnMoveLast.setEnabled(hasRows);
         } else {
-            // Trạng thái chỉnh sửa
             txtId.setEnabled(false);
             btnCreate.setEnabled(false);
             btnUpdate.setEnabled(true);
@@ -862,14 +859,8 @@ public void create() {
             rd_canceled.setEnabled(true);
             rd_completed.setEnabled(true);
             rd_sevicing.setEnabled(true);
-
-            int rowCount = tblBills.getRowCount();
-            boolean hasRows = rowCount > 0;
-            btnMoveFirst.setEnabled(hasRows);
-            btnMovePrevious.setEnabled(hasRows);
-            btnMoveNext.setEnabled(hasRows);
-            btnMoveLast.setEnabled(hasRows);
         }
+
     }
 
     @Override
@@ -886,11 +877,12 @@ public void create() {
     public void deleteCheckedItems() {
         if (XDialog.confirm("Bạn thực sự muốn xóa các mục chọn?")) {
             for (int i = 0; i < tblBills.getRowCount(); i++) {
-                if ((Boolean) tblBills.getValueAt(i, 7)) {
+                if ((Boolean) tblBills.getValueAt(i, 6)) {
                     dao.deleteById(items.get(i).getId());
                 }
             }
             this.fillToTable();
+            System.out.println("items size = " + items.size());
         }
     }
 
@@ -932,5 +924,4 @@ public void create() {
             tblBills.setValueAt(b, i, 6);
         }
     }
-    
 }

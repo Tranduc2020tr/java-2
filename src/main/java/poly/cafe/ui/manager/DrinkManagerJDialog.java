@@ -629,15 +629,15 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
         items = dao.findAll();
         
         for (Drink drink : items) {
-             String status = drink.isAvailable()? "Còn Hàng" : "Hết Hàng";
+             
             Object[] row = {
                 drink.getId(),
                 drink.getName(),
                 drink.getUnitPrice(),
                 drink.getDiscount(), 
                 drink.getUnitPrice() * (1 - drink.getDiscount()),
-                status,
-                false  // checkbox
+                drink.isAvailable()? "Còn Hàng" : "Hết Hàng",
+                false  
             };
             model.addRow(row);
         }
