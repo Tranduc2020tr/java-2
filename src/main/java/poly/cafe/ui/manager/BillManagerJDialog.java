@@ -23,10 +23,6 @@ import poly.cafe.util.TimeRange;
 import poly.cafe.util.XDate;
 import poly.cafe.util.XDialog;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 /**
  *
@@ -154,6 +150,11 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
         jLabel2.setText("Đến ngày");
 
         cboTimeRanges.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hôm Này", "Tuần Này", "Tháng Này", "Quý Này", "Năm Nay" }));
+        cboTimeRanges.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTimeRangesActionPerformed(evt);
+            }
+        });
 
         btnCheckAll2.setText("Chọn tất cả");
         btnCheckAll2.addActionListener(new java.awt.event.ActionListener() {
@@ -507,6 +508,10 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
     private void rd_canceledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rd_canceledActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rd_canceledActionPerformed
+
+    private void cboTimeRangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTimeRangesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboTimeRangesActionPerformed
 
     /**
      * @param args the command line arguments

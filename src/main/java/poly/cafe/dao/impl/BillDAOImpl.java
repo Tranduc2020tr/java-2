@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import poly.cafe.dao.BillDAO;
 import poly.cafe.entity.Bill;
+import poly.cafe.ui.XAuth;
 import poly.cafe.util.XJdbc;
 import poly.cafe.util.XQuery;
 
@@ -94,4 +95,29 @@ public class BillDAOImpl implements BillDAO {
     public List<Bill> findByTimeRange(Date begin, Date end) {
         return selectBySql(findByTimeRangeSql, begin, end);
     }
+
+    @Override
+    public Bill findServicingByCardId(Integer cardId) {
+        String sql = "SELECT * FROM Bills WHERE CardId=? AND Status=0";
+        Bill bill = XQuery.getSingleBean(Bill.class, sql, cardId);
+        if (bill == null) { 
+            Bill newBill = new Bill();
+            newBill.setCardId(cardId);
+            newBill.setCheckin(new Date());
+            newBill.setStatus(0); 
+            newBill.setUsername(XAuth.user.getUsername());
+            bill = this.create(newBill); 
+        }
+        return bill;
+    }
+
+    @Override
+    public List<Bill> findByUserAndTimeRange(String username, Date begin, Date end) {
+
+        String sql = "SELECT * FROM Bills "
+                + " WHERE Username=? AND Checkin BETWEEN ? AND ?";
+        return XQuery.getBeanList(Bill.class, sql, username, begin, end);
+    }
+
 }
+

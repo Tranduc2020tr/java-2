@@ -4,11 +4,25 @@
  */
 package poly.cafe.ui.manager;
 
+import java.util.Date;
+import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.table.DefaultTableModel;
+import poly.cafe.dao.RevenueDAO;
+import poly.cafe.dao.impl.RevenueDAOImpl;
+import poly.cafe.entity.Revenue;
+
+import poly.cafe.ui.RevenueController.RevenueController;
+import poly.cafe.util.TimeRange;
+import poly.cafe.util.XDate;
+
 /**
  *
  * @author hang
  */
-public class RevenueManagerJDialog extends javax.swing.JDialog {
+public class RevenueManagerJDialog extends JDialog implements RevenueController {
+
+    RevenueDAO dao = new RevenueDAOImpl(); // ✅ Đúng interface
 
     /**
      * Creates new form RevenueManagerJDialog
@@ -27,21 +41,172 @@ public class RevenueManagerJDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tabs = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblByCategory = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblByUser = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtBegin = new javax.swing.JTextField();
+        txtEnd = new javax.swing.JTextField();
+        cboTimeRanges = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+
+        tabs.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabsStateChanged(evt);
+            }
+        });
+
+        tblByCategory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Loại", "Doanh thu", "Số lượng", "Giá thấp nhất", "Giá cao nhất", "Giá trung bình"
+            }
+        ));
+        jScrollPane1.setViewportView(tblByCategory);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tabs.addTab("Doanh thu từng loại", jPanel1);
+
+        tblByUser.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Nhân Viên", "Doanh thu ", "Số bill", "Bill đầu tiên ", "Bill cuối cùng"
+            }
+        ));
+        jScrollPane2.setViewportView(tblByUser);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        tabs.addTab("Doanh thu từng nhân viên", jPanel2);
+
+        jLabel3.setText("Từ ngày");
+
+        jLabel4.setText("Đến ngày");
+
+        cboTimeRanges.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hôm Này", "Tuần Này", "Tháng Này", "Quý Này", "Năm Nay" }));
+        cboTimeRanges.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTimeRangesActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Lọc");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtBegin, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(32, 32, 32)
+                .addComponent(cboTimeRanges, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
+            .addComponent(tabs, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(32, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(txtBegin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboTimeRanges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addGap(18, 18, 18)
+                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.open();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void tabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabsStateChanged
+        // TODO add your handling code here:
+        this.fillRevenue();
+    }//GEN-LAST:event_tabsStateChanged
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.fillRevenue();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cboTimeRangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTimeRangesActionPerformed
+        // TODO add your handling code here:
+        this.selectTimeRange();
+    }//GEN-LAST:event_cboTimeRangesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -86,5 +251,93 @@ public class RevenueManagerJDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboTimeRanges;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane tabs;
+    private javax.swing.JTable tblByCategory;
+    private javax.swing.JTable tblByUser;
+    private javax.swing.JTextField txtBegin;
+    private javax.swing.JTextField txtEnd;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void open() {
+        this.setLocationRelativeTo(null);
+        this.selectTimeRange();
+
+    }
+
+    @Override
+    public void selectTimeRange() {
+        TimeRange range = switch (cboTimeRanges.getSelectedIndex()) {
+            case 0 ->
+                TimeRange.today();
+            case 1 ->
+                TimeRange.thisWeek();
+            case 2 ->
+                TimeRange.thisMonth();
+            case 3 ->
+                TimeRange.thisQuarter();
+            case 4 ->
+                TimeRange.thisYear();
+            default ->
+                TimeRange.today();
+        };
+
+        txtBegin.setText(XDate.format(range.getBegin(), "HH:mm:ss dd-MM-yyyy"));
+        txtEnd.setText(XDate.format(range.getEnd(), "HH:mm:ss dd-MM-yyyy"));
+
+        this.fillRevenue();
+    }
+
+    @Override
+    public void fillRevenue() {
+        Date begin = XDate.parse(txtBegin.getText(), "HH:mm:ss dd-MM-yyyy");
+        Date end = XDate.parse(txtEnd.getText(), "HH:mm:ss dd-MM-yyyy");
+        switch (tabs.getSelectedIndex()) {
+            case 0 ->
+                this.fillRevenueByCategory(begin, end);
+            case 1 ->
+                this.fillRevenueByUser(begin, end);
+        }
+    }
+
+    private void fillRevenueByCategory(Date begin, Date end) {
+        List<Revenue.ByCategory> items = dao.getByCategory(begin, end);
+        DefaultTableModel model = (DefaultTableModel) tblByCategory.getModel();
+        model.setRowCount(0);
+        items.forEach(item -> {
+            Object[] row = {
+                item.getCategory(),
+                String.format("$%.2f", item.getRevenue()),
+                item.getQuantity(),
+                String.format("$%.2f", item.getMinPrice()),
+                String.format("$%.2f", item.getMaxPrice()),
+                String.format("$%.2f", item.getAvgPrice())
+            };
+            model.addRow(row);
+        });
+    }
+
+    private void fillRevenueByUser(Date begin, Date end) {
+        List<Revenue.ByUser> items = dao.getByUser(begin, end);
+        DefaultTableModel model = (DefaultTableModel) tblByUser.getModel();
+        model.setRowCount(0);
+        items.forEach(item -> {
+            Object[] row = {
+                item.getUser(),
+                String.format("$%.2f", item.getRevenue()),
+                item.getQuantity(),
+                XDate.format(item.getFirstTime(), "hh:mm:ss dd-MM-yyyy"),
+                XDate.format(item.getLastTime(), "hh:mm:ss dd-MM-yyyy")
+            };
+            model.addRow(row);
+        });
+    }
 }

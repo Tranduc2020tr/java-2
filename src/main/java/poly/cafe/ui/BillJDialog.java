@@ -4,12 +4,15 @@
  */
 package poly.cafe.ui;
 
+import lombok.*;
+import poly.cafe.entity.Bill;
+@Setter
 /**
  *
  * @author hang
  */
 public class BillJDialog extends javax.swing.JDialog {
-
+      private Bill bill;
     /**
      * Creates new form BillJDialog
      */
@@ -84,6 +87,10 @@ public class BillJDialog extends javax.swing.JDialog {
             }
         });
     }
+
+public void setBill(Bill bill) {
+    this.bill = bill;
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
