@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import poly.cafe.dao.CategoryDAO;
 import poly.cafe.dao.impl.CategoryDAOImpl;
+import poly.cafe.entity.Bill;
 import poly.cafe.entity.Category;
 import poly.cafe.entity.Drink;
 import poly.cafe.ui.DrikController.DrinkController;
@@ -887,6 +888,21 @@ public class DrinkManagerJDialog extends javax.swing.JDialog implements DrinkCon
         for (int i = 0; i < tblCategories.getRowCount(); i++) {
             tblCategories.setValueAt(checked, i, 6); 
         }
+    }
+
+    @Override
+    public void setBill(Bill bill) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void fillDrinks() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void addDrinkToBill() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
 

@@ -26,14 +26,20 @@ public class BillDetailDAOImpl implements BillDetailDAO {
 
     @Override
     public BillDetail create(BillDetail entity) {
-        XJdbc.executeUpdate(createSql,
-            entity.getBillId(),
-            entity.getDrinkId(),
-            entity.getUnitPrice(),
-            entity.getDiscount(),
-            entity.getQuantity()
-        );
-        return entity;
+        String sql = "INSERT INTO BillDetails (BillId, DrinkId, UnitPrice, Discount, Quantity) VALUES (?, ?, ?, ?, ?)";
+        try {
+            Long id = XJdbc.executeInsert(sql,
+                entity.getBillId(),
+                entity.getDrinkId(),
+                entity.getUnitPrice(),
+                entity.getDiscount(),
+                entity.getQuantity()
+            );
+            entity.setId(id);
+            return entity;
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo chi tiết hóa đơn", e);
+        }
     }
 
     @Override

@@ -123,6 +123,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         getContentPane().add(btnCardManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 360, 130, 37));
 
         btnRevenueManager.setText("DOANH THU");
+        btnRevenueManager.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRevenueManagerActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnRevenueManager, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 420, 130, 37));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/coffee-shop.jpg"))); // NOI18N
@@ -140,6 +145,7 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
 
     private void btnSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesActionPerformed
         // TODO add your handling code here:
+        this.showSalesJDialog(this);
     }//GEN-LAST:event_btnSalesActionPerformed
 
     private void btnHistory1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistory1ActionPerformed
@@ -181,6 +187,11 @@ public class PolyCafeJFrame extends javax.swing.JFrame implements PolyCafeContro
         // TODO add your handling code here:
         this.showDrinkManagerJDialog(this);
     }//GEN-LAST:event_btnCategoryManagerActionPerformed
+
+    private void btnRevenueManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRevenueManagerActionPerformed
+        // TODO add your handling code here:
+        this.showRevenueManagerJDialog(this);
+    }//GEN-LAST:event_btnRevenueManagerActionPerformed
 
     /**
      * @param args the command line arguments

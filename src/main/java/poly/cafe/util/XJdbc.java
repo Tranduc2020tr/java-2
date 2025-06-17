@@ -152,6 +152,23 @@ public class XJdbc {
     }
 }
 
+    public static Long executeInsert(String sql, Object... values) {
+        try {
+            var conn = XJdbc.openConnection();
+            var stmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+            for (int i = 0; i < values.length; i++) {
+                stmt.setObject(i + 1, values[i]);
+            }
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+            return null;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
    
 

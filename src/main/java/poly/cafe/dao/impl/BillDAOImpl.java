@@ -22,14 +22,20 @@ public class BillDAOImpl implements BillDAO {
 
     @Override
     public Bill create(Bill entity) {
-        XJdbc.executeUpdate(createSql,
-            entity.getUsername(),
-            entity.getCardId(),
-            entity.getCheckin(),
-            entity.getCheckout(),
-            entity.getStatus()
-        );
-        return entity;
+        String sql = "INSERT INTO Bills (Username, CardId, Checkin, Checkout, Status) VALUES (?, ?, ?, ?, ?)";
+        try {
+            Long id = XJdbc.executeInsert(sql,
+                entity.getUsername(),
+                entity.getCardId(),
+                entity.getCheckin(),
+                entity.getCheckout(),
+                entity.getStatus()
+            );
+            entity.setId(id);
+            return entity;
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo hóa đơn mới", e);
+        }
     }
 
     @Override

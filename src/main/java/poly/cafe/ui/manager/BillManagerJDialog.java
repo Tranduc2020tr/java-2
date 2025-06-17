@@ -929,4 +929,37 @@ public class BillManagerJDialog extends javax.swing.JDialog implements BillContr
             tblBills.setValueAt(b, i, 6);
         }
     }
+
+    @Override
+    public void setBill(Bill bill) {
+           }
+
+    @Override
+    public void close() {
+            }
+
+    @Override
+    public void showDrinkJDialog() {
+      
+    }
+
+    @Override
+    public void removeDrinks() {
+     
+    }
+
+    @Override
+    public void updateQuantity() {
+       
+    }
+
+    @Override
+    public void checkout() {
+       
+    }
+
+    @Override
+    public void cancel() {
+        
+    }
 }

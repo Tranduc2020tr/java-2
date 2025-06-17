@@ -278,7 +278,7 @@ public class SalesJDialog extends JDialog implements SalesController{
         BillDAO dao = new BillDAOImpl();
         Bill bill = dao.findServicingByCardId(cardId); // Lấy hóa đơn đang phục vụ theo thẻ
         BillJDialog dialog = new BillJDialog((Frame) this.getOwner(), true);
-        dialog.setBill(bill); // Yêu cầu BillJDialog có @Setter hoặc setter setBill()
+        dialog.setBill(bill);
         dialog.setVisible(true);
     }
 
@@ -296,7 +296,26 @@ public class SalesJDialog extends JDialog implements SalesController{
         btnCard.setText(String.format("Card #%d", card.getId()));
         btnCard.setPreferredSize(new Dimension(0, 80));
         btnCard.setEnabled(card.getStatus() == 1); // Chỉ bật nếu trạng thái là 0 (còn trống)
-        btnCard.setBackground(btnCard.isEnabled() ? Color.GREEN : Color.GRAY);
+        int status = card.getStatus();
+
+        // Cho phép bấm nếu thẻ trống hoặc đang phục vụ
+        btnCard.setEnabled(status == 1);
+
+        // Đổi màu theo trạng thái
+        switch (status) {
+            case 1: // Hoạt động (trống)
+                btnCard.setBackground(Color.GREEN);
+                break;
+            case 2: // Đang phục vụ (chưa thanh toán)
+                btnCard.setBackground(Color.GRAY);
+                break;
+            case 3: // Lỗi hoặc bị khóa
+                  btnCard.setBackground(Color.YELLOW);
+                break;
+            default:
+                btnCard.setBackground(Color.LIGHT_GRAY); // mặc định nếu status không hợp lệ
+        }
+
         btnCard.setActionCommand(String.valueOf(card.getId())); // Sửa lỗi cú pháp tại đây
         btnCard.addActionListener((ActionEvent e) -> {
             int cardId = Integer.parseInt(e.getActionCommand());
