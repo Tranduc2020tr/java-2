@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.Timer;
 import poly.cafe.dao.BillDAO;
 import poly.cafe.dao.impl.BillDAOImpl;
 import poly.cafe.entity.Bill;
@@ -25,7 +26,7 @@ import poly.cafe.entity.Card;
  */
 public class SalesJDialog extends JDialog implements SalesController{
     
-
+    private Timer reloadTimer;
 
     /**
      * Creates new form SaleJDialog
@@ -33,6 +34,8 @@ public class SalesJDialog extends JDialog implements SalesController{
     public SalesJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.open();
+        startReloadTimer();
     }
 
     /**
@@ -278,7 +281,7 @@ public class SalesJDialog extends JDialog implements SalesController{
         BillDAO dao = new BillDAOImpl();
         Bill bill = dao.findServicingByCardId(cardId); // Lấy hóa đơn đang phục vụ theo thẻ
         BillJDialog dialog = new BillJDialog((Frame) this.getOwner(), true);
-        dialog.setBill(bill);
+        dialog.setill(bill); 
         dialog.setVisible(true);
     }
 
@@ -295,33 +298,45 @@ public class SalesJDialog extends JDialog implements SalesController{
         JButton btnCard = new JButton();
         btnCard.setText(String.format("Card #%d", card.getId()));
         btnCard.setPreferredSize(new Dimension(0, 80));
-        btnCard.setEnabled(card.getStatus() == 1); // Chỉ bật nếu trạng thái là 0 (còn trống)
-        int status = card.getStatus();
-
-        // Cho phép bấm nếu thẻ trống hoặc đang phục vụ
-        btnCard.setEnabled(status == 1);
-
-        // Đổi màu theo trạng thái
-        switch (status) {
-            case 1: // Hoạt động (trống)
+        btnCard.setEnabled(card.getStatus() == 1 || card.getStatus() == 3); // Chỉ bật nếu trạng thái là 1 (còn trống)
+        
+        // Set màu dựa vào trạng thái
+        switch(card.getStatus()) {
+            case 1: // Còn trống
                 btnCard.setBackground(Color.GREEN);
                 break;
-            case 2: // Đang phục vụ (chưa thanh toán)
-                btnCard.setBackground(Color.GRAY);
+            case 2: // Đang phục vụ
+                btnCard.setBackground(Color.YELLOW);
                 break;
-            case 3: // Lỗi hoặc bị khóa
-                  btnCard.setBackground(Color.YELLOW);
+            case 3: // Lỗi
+                btnCard.setBackground(Color.RED);
                 break;
             default:
-                btnCard.setBackground(Color.LIGHT_GRAY); // mặc định nếu status không hợp lệ
+                btnCard.setBackground(Color.GRAY);
         }
-
-        btnCard.setActionCommand(String.valueOf(card.getId())); // Sửa lỗi cú pháp tại đây
+        
+        btnCard.setActionCommand(String.valueOf(card.getId()));
         btnCard.addActionListener((ActionEvent e) -> {
             int cardId = Integer.parseInt(e.getActionCommand());
             SalesJDialog.this.showBillJDialog(cardId);
         });
         return btnCard;
+    }
+
+    private void startReloadTimer() {
+        // Tạo timer để reload mỗi 5 giây
+        reloadTimer = new Timer(100, (e) -> {
+            loadCards();
+        });
+        reloadTimer.start();
+    }
+
+    @Override
+    public void dispose() {
+        if (reloadTimer != null) {
+            reloadTimer.stop();
+        }
+        super.dispose();
     }
 }
 

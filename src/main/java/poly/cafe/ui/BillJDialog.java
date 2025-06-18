@@ -74,7 +74,7 @@ public class BillJDialog extends JDialog implements BillController {
         btnAdd = new javax.swing.JButton();
         btnCheckout = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        bt_datdo = new javax.swing.JButton();
+        bt_datdo1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -152,10 +152,10 @@ public class BillJDialog extends JDialog implements BillController {
             }
         });
 
-        bt_datdo.setText("Đặt đồ");
-        bt_datdo.addActionListener(new java.awt.event.ActionListener() {
+        bt_datdo1.setText("Đặt đồ");
+        bt_datdo1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_datdoActionPerformed(evt);
+                bt_datdo1ActionPerformed(evt);
             }
         });
 
@@ -193,8 +193,8 @@ public class BillJDialog extends JDialog implements BillController {
                 .addGap(18, 18, 18)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(bt_datdo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(bt_datdo1)
+                .addGap(18, 18, 18)
                 .addComponent(btnCheckout)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancel)
@@ -239,7 +239,7 @@ public class BillJDialog extends JDialog implements BillController {
                     .addComponent(btnAdd)
                     .addComponent(btnCheckout)
                     .addComponent(btnCancel)
-                    .addComponent(bt_datdo))
+                    .addComponent(bt_datdo1))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
@@ -283,14 +283,17 @@ public class BillJDialog extends JDialog implements BillController {
         this.close();
     }//GEN-LAST:event_formWindowClosed
 
-    private void bt_datdoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_datdoActionPerformed
-        // TODO add your handling code here:
-          int status = card.getStatus();
-            card.setStatus(3); // Cập nhật trạng thái
+    private void bt_datdo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_datdo1ActionPerformed
+       if (card != null) {
+            card.setStatus(3); // Cập nhật trạng thái lỗi
             CardDAO dao = new CardDAOImpl();
             dao.update(card); // Gửi thay đổi xuống DB
-          
-    }//GEN-LAST:event_bt_datdoActionPerformed
+             this.edit();
+            XDialog.alert("đặt đồ thành công");
+            this.dispose();
+           
+        }
+    }//GEN-LAST:event_bt_datdo1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -334,13 +337,9 @@ public class BillJDialog extends JDialog implements BillController {
         });
     }
 
-    @Override
-    public void setBill(Bill bill) {
-        this.bill = bill;
-    }
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bt_datdo;
+    private javax.swing.JButton bt_datdo1;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnCheckout;
@@ -457,6 +456,13 @@ public class BillJDialog extends JDialog implements BillController {
             billDAO.update(bill);
             this.setForm(bill);
             
+            // Cập nhật trạng thái card về trống
+            if (card != null) {
+                card.setStatus(1); // Trở về trạng thái còn trống
+                CardDAO cardDao = new CardDAOImpl();
+                cardDao.update(card);
+            }
+            
             // Tạo hóa đơn mới
             Bill newBill = new Bill();
             newBill.setCheckin(new Date());
@@ -473,11 +479,15 @@ public class BillJDialog extends JDialog implements BillController {
     public void cancel() {
         if (billDetails.isEmpty()) {
             billDAO.deleteById(bill.getId());
+            // Cập nhật trạng thái card về trống
+            if (card != null) {
+                card.setStatus(1); // Trở về trạng thái còn trống
+                CardDAO cardDao = new CardDAOImpl();
+                cardDao.update(card);
+            }
             this.dispose();
-        } else if (XDialog.confirm("Bạn muốn hủy phiếu bán hàng?")) {
-            bill.setStatus(0);
-            billDAO.update(bill);
-            this.setForm(bill);
+        } else {
+            XDialog.alert("Không thể hủy phiếu đã có đồ uống!");
         }
     }
 
@@ -628,7 +638,11 @@ public class BillJDialog extends JDialog implements BillController {
     public void moveTo(int index) {
     }
 
-    void seBill(Bill bill) {
-        this.bill = bill;
+    void setill(Bill bill) {
+       this.bill = bill;
+        if (bill != null) {
+            CardDAO cardDao = new CardDAOImpl();
+            this.card = cardDao.findById(bill.getCardId());
+        }
     }
 }

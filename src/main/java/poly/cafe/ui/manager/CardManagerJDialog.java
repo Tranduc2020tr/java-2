@@ -84,6 +84,11 @@ public class CardManagerJDialog extends JDialog implements CardController{
                 return types [columnIndex];
             }
         });
+        tblCategories.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCategoriesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblCategories);
 
         btnCheckAll.setText("Chọn tất cả");
@@ -341,6 +346,11 @@ public class CardManagerJDialog extends JDialog implements CardController{
         this.deleteCheckedItems();
     }//GEN-LAST:event_btnDeleteCheckedItemsActionPerformed
 
+    private void tblCategoriesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCategoriesMouseClicked
+        // TODO add your handling code here:
+        this.edit();
+    }//GEN-LAST:event_tblCategoriesMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -529,6 +539,7 @@ public class CardManagerJDialog extends JDialog implements CardController{
     public void update() {
         Card entity = this.getForm();
         dao.update(entity);
+        XDialog.alert("cập nhật thành công");
         this.fillToTable();
     }
 
